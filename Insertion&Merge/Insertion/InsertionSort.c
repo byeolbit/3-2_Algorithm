@@ -1,59 +1,85 @@
 //
 //  InsertionSort.c
-//  
 //
 //  Created by Sang Gyeong Jo on 2016. 9. 8..
-//
+//  Copyright © 2016년 Sang Gyeong Jo. All rights reserved.
 //
 
 #include <stdio.h>
+#include <stdlib.h>
+
+int *data;
+File *fp;
+
+void read_file(char *file_path);
+void open_file(char *flie_path);
+void get_original_data(void);
+int insertion_sort(void);
+void write_sorted_data();
 
 int main(void){
     
+    //Init variables;
+    char *file_path = "./data02.txt";
+    char *result_file = "sort.txt";
+    data = (int *) malloc(sizeof(int));
     
-    FILE *fp;           //File pointer
+    read_file(*file_path);
     
-    int **arr;          //2d array pointer
-    char ch;            //variable for read data
-    int test_case = 0;  //iterator for test cases
-    int size = 0;       //iterator for array size
+    get_original_data();
     
+    while(insertion_sort()) write_sorted_data();
     
-    if ((fp = fopen("./data02.txt", "r"))){
-    /* File opening exception handling */
+    fclose(fp); //close file pointer
+    
+}
+
+//Read file from file path and return File pointer
+void read_file(char *file_path){
+    
+    // File opening exception handling
+    if(!(fp = fopen(file_path, "r"))){
         
         perror("File open error!");
         exit(1);
-    } else {
-      /* Read file data and store to memory */
         
-        //init 2D array
-        arr = (int**) malloc (sizeof(int*) * (test_case+1));
-        arr[test_case] = (int*) malloc (sizeof(int) * (size+1));
+    }
+}
+
+//Open file to write sorted data
+void open_file(char *file_path){
+    // File opening exception handling
+    if(!(fp = fopen(file_path, "w"))){
         
-        /* Read data and store at each case */
-        while(EOF != (ch = fgetc(fp))){
+        perror("File open error!");
+        exit(1);
+        
+    }
+}
+
+//Get a set of data from file
+int get_original_data(){
+    
+    int count = 1;
+    
+    if(EOF != (ch = fgetc(fp))){
+        
+        while(ch != ','){
             
-            /* Read a case */
-            while(ch != ','){
-                //
-                arr[test_case][size] = atoi(ch);
-                arr[test_case] = realloc(&arr[test_case], sizeof(int) * (size+1));
+            realloc(data, sizeof(int) * (count+1));
             
-                //read next data
-                ch = fgetc(fp);
-                
-                //increase interator
-                ++size;
-            }
+            data[count] = ch -'0';
             
-            //init iterators
-            ++test_case;
-            size = 0;
+            count++;
             
-            arr = realloc(arr, sizeof(int) * (test_case+1));
+            return 1;
+            
+        } else {
+            return 0;
         }
     }
+}
+
+void insertion_sort(){
     
-    fclose(fp); //close file pointer
 }
