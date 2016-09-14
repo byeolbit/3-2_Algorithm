@@ -9,7 +9,8 @@
 #include <stdlib.h>
 
 int *data;
-File *fp;
+File *data_file_pointer;
+File *result_file_pointer;
 
 void read_file(char *file_path);
 void open_file(char *flie_path);
@@ -30,7 +31,8 @@ int main(void){
     
     while(insertion_sort()) write_sorted_data();
     
-    fclose(fp); //close file pointer
+    fclose(data_file_pointer);  //close data file pointer
+    fclose(result_file_pointer);  //close result file pointer
     
 }
 
@@ -38,7 +40,7 @@ int main(void){
 void read_file(char *file_path){
     
     // File opening exception handling
-    if(!(fp = fopen(file_path, "r"))){
+    if(!(data_file_pointer = fopen(file_path, "r"))){
         
         perror("File open error!");
         exit(1);
@@ -48,8 +50,9 @@ void read_file(char *file_path){
 
 //Open file to write sorted data
 void open_file(char *file_path){
+    
     // File opening exception handling
-    if(!(fp = fopen(file_path, "w"))){
+    if(!(result_file_pointer; = fopen(file_path, "w"))){
         
         perror("File open error!");
         exit(1);
@@ -62,7 +65,7 @@ int get_original_data(){
     
     int count = 1;
     
-    if(EOF != (ch = fgetc(fp))){
+    if(EOF != (ch = fgetc(data_file_pointer))){
         
         while(ch != ','){
             
