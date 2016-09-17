@@ -10,14 +10,11 @@
 
 int *data_set;
 char *data;
-File *data_file_pointer;
-File *result_file_pointer;
 
-void read_file(char *file_path);
-void open_file(char *flie_path);
-void get_original_data(void);
-int insertion_sort(void);
-void write_sorted_data();
+File open_file(char *file_path, char *op);
+int get_original_data(char *file_path);
+void insertion_sort(int size);
+void write_sorted_data(char *file_path);
 
 int main(void){
     
@@ -25,44 +22,40 @@ int main(void){
     char *file_path = "./data02.txt";
     char *result_file = "sort.txt";
     data_set = (int *) malloc(sizeof(int));
-    
-    read_file(*file_path);
+    int data_size = 0;
     
     get_original_data();
     
-    while(insertion_sort()) write_sorted_data();
+    data_size = insertion_sort();
     
-    fclose(data_file_pointer);  //close data file pointer
-    fclose(result_file_pointer);  //close result file pointer
+    insertion_sort(data_size);
+    
+    open_file(*result_file);
+    
+    write_sorted_data();
     
 }
 
 //Read file from file path and return File pointer
-void read_file(char *file_path){
+File open_file(char *file_path, char *op){
+    
+    File *fp;
     
     // File opening exception handling
-    if(!(data_file_pointer = fopen(file_path, "r"))){
+    if(!(fp = fopen(file_path, op))){
         
         perror("File open error!");
         exit(1);
         
     }
-}
-
-//Open file to write sorted data
-void open_file(char *file_path){
     
-    // File opening exception handling
-    if(!(result_file_pointer; = fopen(file_path, "w"))){
-        
-        perror("File open error!");
-        exit(1);
-        
-    }
+    return fp;
 }
 
 //Get a set of data from file
-int get_original_data(){
+int get_original_data(char *file_path){
+    
+    File *data_file_pointer = open_file(*file_path, "r");
     
     int count_int;
     int count_loop = 0;
@@ -95,10 +88,32 @@ int get_original_data(){
 
     }
     
-    return count_loop;
+    fclose(data_file_pointer);  //close data file pointer
+    
+    return count_loop; //return size of data_set
     
 }
 
-void insertion_sort(){
+void insertion_sort(size){
     
+    int i,j,key;
+    
+    for (j=1; i<size; j++){
+        key = data_set[j];
+        i = j-1;
+        while(i>=0 && data_set[i]>key){
+            data_set[i+1] = data_set[i];
+            --i;
+        }
+        data_set[a+1] = key;
+    }
+}
+
+void write_sorted_data(char *file_path){
+    
+    File *result_file_pointer = open_file(*file_path, "w");
+    
+    
+    
+    fclose(result_file_pointer);  //close result file pointer
 }
