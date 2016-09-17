@@ -109,11 +109,18 @@ void insertion_sort(int size){
     }
 }
 
-void write_sorted_data(char *file_path){
+void write_sorted_data(char *file_path, int size){
     
     File *result_file_pointer = open_file(*file_path, "w");
     
-    
+    for (i=0; i<size; i++){
+        fprintf("%d",data_set[i]);
+        printf("%d",data_set[i]);   //consle check
+        if(i != size) {
+            fprintf(",");
+            printf(",");            //cosole check
+        }
+    }
     
     fclose(result_file_pointer);  //close result file pointer
 }
