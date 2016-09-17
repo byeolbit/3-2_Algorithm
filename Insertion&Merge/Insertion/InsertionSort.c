@@ -8,7 +8,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int *data;
+int *data_set;
+char *data;
 File *data_file_pointer;
 File *result_file_pointer;
 
@@ -23,7 +24,7 @@ int main(void){
     //Init variables;
     char *file_path = "./data02.txt";
     char *result_file = "sort.txt";
-    data = (int *) malloc(sizeof(int));
+    data_set = (int *) malloc(sizeof(int));
     
     read_file(*file_path);
     
@@ -63,24 +64,39 @@ void open_file(char *file_path){
 //Get a set of data from file
 int get_original_data(){
     
-    int count = 1;
+    int count_int;
+    int count_loop = 0;
     
-    if(EOF != (ch = fgetc(data_file_pointer))){
+    while(EOF != (ch = fgetc(data_file_pointer))){
+    
+        count_int = 0;
         
-        while(ch != ','){
+        data = (char *) malloc(sizeof(char));
+        
+        while(ch != ',' || ch != EOF){
             
-            realloc(data, sizeof(int) * (count+1));
+            realloc(data, sizeof(char) * (count_int+1));
             
-            data[count] = ch -'0';
+            data[count_int] = ch;
             
-            count++;
+            ++count;
             
-            return 1;
-            
-        } else {
-            return 0;
         }
+        
+        data_set[count_loop] = atoi(data);
+        
+        free(data);
+        
+        ++count_loop;
+        
+        if(ch == EOF) break;
+        
+        realloc(data_set, sizeof(int) * (count_loop+1));
+
     }
+    
+    return count_loop;
+    
 }
 
 void insertion_sort(){
