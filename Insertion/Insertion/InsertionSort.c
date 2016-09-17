@@ -18,7 +18,7 @@ void write_sorted_data(char *file_path, int size);
 int main(void){
     
     //Init variables;
-    char *file_path = "data02.txt";
+    char *file_path = "/Users/sanggyeongjo/git/3-2_Algorithm/Insertion&Merge/Insertion/data02.txt";
     char *result_file = "sort.txt";
     data_set = (int *) calloc(1,sizeof(int));
     int data_size = 0;
@@ -65,7 +65,7 @@ int get_original_data(char *file_path){
         while(ch != ',' && ch != EOF){
             
             if (count_int == 0) data = (char *) calloc(1,sizeof(char));
-            
+
             else realloc(data, sizeof(char) * (count_int+1));
             
             data[count_int] = ch;
@@ -122,14 +122,13 @@ void write_sorted_data(char *file_path, int size){
     int i;
     
     for (i=0; i<size; i++){
-        fprintf(result_file_pointer, "%d", data_set[i]);    //File output
-        printf("%d", data_set[i]);                          //Consle output
+        //fprintf(result_file_pointer, "%d", data_set[i]);
+        printf("%d", data_set[i]);   //consle check
         if(i != size-1) {
-            fprintf(result_file_pointer,",");               //File output
-            printf(",");                                    //Cosole output
+            //fprintf(result_file_pointer,",");
+            printf(",");            //cosole check
         }
     }
     
-    printf("\n");   //Console output
     fclose(result_file_pointer);  //close result file pointer
 }
