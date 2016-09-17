@@ -94,7 +94,7 @@ int get_original_data(char *file_path){
     
 }
 
-void insertion_sort(size){
+void insertion_sort(int size){
     
     int i,j,key;
     
