@@ -87,7 +87,7 @@ int get_original_data(char *file_path){
         
         if(ch == EOF) break;
         
-        temp = realloc(data_set, sizeof(int) * (count_loop+1));
+        temp = realloc(data_set, sizeof(int) * (count_loop+1)); //Avoid NULL pointer error
         
         data_set = temp;
         
