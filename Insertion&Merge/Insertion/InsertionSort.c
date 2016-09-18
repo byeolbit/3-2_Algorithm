@@ -10,26 +10,34 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int *data_set;
-
 FILE *open_file(char *file_path, char *op);
-int get_original_data(char *file_path);
-void insertion_sort(int size);
-void write_sorted_data(char *file_path, int size);
+int *get_original_data(char *file_path);
+int get_data_size(int *data_set);
+void insertion_sort(int *data_set, int size);
+void write_sorted_data(int *data_set, char *file_path, int size);
 
 int main(void){
     
     //Init variables;
+    int *data_set;
     char *file_path = "data02.txt";
     char *result_file = "hw02_00_201102513_insertion.txt";
-    data_set = (int *) calloc(1,sizeof(int));
     int data_size = 0;
     
-    data_size = get_original_data(file_path);
+    data_set = get_original_data(file_path);
     
-    insertion_sort(data_size);
+    data_size = get_data_size(data_set);
     
-    write_sorted_data(result_file, data_size);
+    insertion_sort(data_set, data_size);
+    
+    write_sorted_data(data_set, result_file, data_size);
+    
+}
+
+//Get length of array
+int get_data_size(int *data_set){
+    
+    return sizeof(data_set)/sizeof(data_set[0]);
     
 }
 
@@ -50,10 +58,11 @@ FILE *open_file(char *file_path, char *op){
 }
 
 //Get a set of data from file
-int get_original_data(char *file_path){
+int *get_original_data(char *file_path){
     
     FILE *data_file_pointer = open_file(file_path, "r");
     
+    int data_set = (int *) calloc(1,sizeof(int));
     char *data = NULL;
     int *temp;
     int count_int;
@@ -99,11 +108,11 @@ int get_original_data(char *file_path){
     
     fclose(data_file_pointer);  //close data file pointer
     
-    return count_loop; //return size of data_set
+    return data_set; //return size of data_set
     
 }
 
-void insertion_sort(int size){
+void insertion_sort(int *data_set, int size){
     
     int i,j,key;
     
@@ -118,7 +127,7 @@ void insertion_sort(int size){
     }
 }
 
-void write_sorted_data(char *file_path, int size){
+void write_sorted_data(int *data_set, char *file_path, int size){
     
     FILE *result_file_pointer = open_file(file_path, "w");
     int i;
