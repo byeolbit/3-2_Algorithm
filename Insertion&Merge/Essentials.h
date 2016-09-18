@@ -1,9 +1,9 @@
 //
 //  Essentials.h
-//  
+//  Insertion
 //
 //  Created by Sang Gyeong Jo on 2016. 9. 18..
-//
+//  Copyright © 2016년 Sang Gyeong Jo. All rights reserved.
 //
 
 #ifndef Essentials_h
@@ -12,11 +12,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+int data_size;
+
+FILE *open_file(char *file_path, char *op);
+int *get_original_data(char *file_path);
+int get_data_size(int *data_set);
+void insertion_sort(int *data_set, int size);
+void write_sorted_data(int *data_set, char *file_path, int size);
 
 //Get length of array
 int get_data_size(int *data_set){
     
-    return sizeof(data_set)/sizeof(data_set[0]);
+    return sizeof(data_set)/sizeof(int);
     
 }
 
@@ -41,7 +48,7 @@ int *get_original_data(char *file_path){
     
     FILE *data_file_pointer = open_file(file_path, "r");
     
-    int data_set = (int *) calloc(1,sizeof(int));
+    int *data_set = (int *) calloc(1,sizeof(int));
     char *data = NULL;
     int *temp;
     int count_int;
@@ -86,6 +93,8 @@ int *get_original_data(char *file_path){
     }
     
     fclose(data_file_pointer);  //close data file pointer
+    
+    data_size = count_loop;
     
     return data_set; //return size of data_set
     

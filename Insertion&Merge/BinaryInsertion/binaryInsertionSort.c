@@ -7,6 +7,19 @@
 //  Copyright © 2016년 Sang Gyeong Jo. All rights reserved.
 //
 
-#include <stdio.h>
-#include <stdlib.h>
+#include "../Essentials.h"
 
+int main(void){
+    
+    //Init variables;
+    int *data_set;
+    char *file_path = "../data02.txt";
+    char *result_file = "hw02_00_201102513_binary_insertion.txt";
+    
+    data_set = get_original_data(file_path);
+    
+    insertion_sort(data_set, data_size);
+    
+    write_sorted_data(data_set, result_file, data_size);
+    
+}
