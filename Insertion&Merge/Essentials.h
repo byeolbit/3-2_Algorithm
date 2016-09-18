@@ -1,6 +1,5 @@
 //
 //  Essentials.h
-//  Insertion
 //
 //  Created by Sang Gyeong Jo on 2016. 9. 18..
 //  Copyright © 2016년 Sang Gyeong Jo. All rights reserved.
@@ -17,6 +16,7 @@ int data_size;
 FILE *open_file(char *file_path, char *op);
 int *get_original_data(char *file_path);
 int get_data_size(int *data_set);
+int binary_search(int *array, ,int target, int size);
 void insertion_sort(int *data_set, int size);
 void write_sorted_data(int *data_set, char *file_path, int size);
 
@@ -100,6 +100,23 @@ int *get_original_data(char *file_path){
     
 }
 
+int binary_search(int *array, int target, int size){
+    
+    int low, high, mid;
+    low = 0;
+    high = size-1;
+    
+    while(low <= high){
+        mid = (low + high) / 2;
+        if(array[mid] > target) high = mid -1;
+        else if (array[mid] < target) low = mid +1;
+        else return low
+    }
+    
+    return -1;
+    
+}
+
 void insertion_sort(int *data_set, int size){
     
     int i,j,key;
@@ -109,6 +126,21 @@ void insertion_sort(int *data_set, int size){
         i = j-1;
         while(i>=0 && data_set[i]>key){
             data_set[i+1] = data_set[i];
+            --i;
+        }
+        data_set[i+1] = key;
+    }
+}
+
+void binary_insertion_sort(int *data_set, int size){
+    
+    int i,j,key;
+    
+    for (j=1; j<size; j++){
+        key = data_set[j];
+        i = j-1;
+        while(i>=0 && data_set[i]>key){
+            data_set[i+1] = data_set[i];ㅇ
             --i;
         }
         data_set[i+1] = key;
