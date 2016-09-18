@@ -1,6 +1,8 @@
 //
 //  InsertionSort.c
 //
+//  Used compiler : Clang-703.0.31
+//
 //  Created by Sang Gyeong Jo on 2016. 9. 8..
 //  Copyright © 2016년 Sang Gyeong Jo. All rights reserved.
 //
@@ -19,7 +21,7 @@ int main(void){
     
     //Init variables;
     char *file_path = "data02.txt";
-    char *result_file = "sort.txt";
+    char *result_file = "hw02_00_201102513_insertion.txt";
     data_set = (int *) calloc(1,sizeof(int));
     int data_size = 0;
     
