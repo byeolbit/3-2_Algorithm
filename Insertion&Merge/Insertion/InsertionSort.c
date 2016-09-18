@@ -62,7 +62,7 @@ int *get_original_data(char *file_path){
     
     FILE *data_file_pointer = open_file(file_path, "r");
     
-    int data_set = (int *) calloc(1,sizeof(int));
+    int *data_set = (int *) calloc(1,sizeof(int));
     char *data = NULL;
     int *temp;
     int count_int;
