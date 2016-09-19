@@ -37,8 +37,8 @@ void stop_timer(){
 }
 
 int calculate_time(){
-    float msec = ((float)(end_time - start_time)) / CLOCKS_PER_SEC;
-    printf("%f milliseconds\n",msec);
+    float msec = (((float)end_time - start_time) / CLOCKS_PER_SEC) * 1000;
+    printf("%f Milliseconds\n",msec);
     return (int)msec;
 }
 
