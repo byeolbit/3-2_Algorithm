@@ -32,7 +32,6 @@ void insertion_sort(int *data_set, int size);
 void write_sorted_data(int *data_set, char *file_path, int size);
 void display_two_array(int *part_a, int *part_b, int size_a, int size_b);
 
-
 void set_timer(){
     start_time = clock();
 }
@@ -271,6 +270,10 @@ int *merge_sort(int *data_set, int size){
     
 }
 
+void check_loops(){
+    printf("%d loops\n",check_loop);
+}
+
 void write_sorted_data(int *data_set, char *file_path, int size){
     
     FILE *result_file_pointer = open_file(file_path, "w");
@@ -286,7 +289,6 @@ void write_sorted_data(int *data_set, char *file_path, int size){
     }
     
     printf("\n");   //Console output
-    printf("%d loops\n",check_loop);
     fclose(result_file_pointer);  //close result file pointer
 }
 
