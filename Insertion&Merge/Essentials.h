@@ -10,15 +10,35 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 int data_size;
+clock_t start_time;
+clock_t end_time;
 
 FILE *open_file(char *file_path, char *op);
+void set_timer();
+void stop_timer();
+int calculate_time();
 int *get_original_data(char *file_path);
 int get_data_size(int *data_set);
 int binary_search(int *array, int target, int size);
 void insertion_sort(int *data_set, int size);
 void write_sorted_data(int *data_set, char *file_path, int size);
+
+void set_timer(){
+    start_time = clock();
+}
+
+void stop_timer(){
+    end_time = clock();
+}
+
+int calculate_time(){
+    int msec = (end_time - start_time) * 1000 / CLOCKS_PER_SEC;
+    printf("%d milliseconds\n",msc%1000);
+    return msec;
+}
 
 //Get length of array
 int get_data_size(int *data_set){
