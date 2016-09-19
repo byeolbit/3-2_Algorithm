@@ -195,28 +195,36 @@ int *merge_combine(int *arr1, int *arr2, int size){
     j = 0;
     k = 0;
     
-    while(i <= size){
+    while(i <= size_a + size_b){
         
         if (merged_arr == NULL) merged_arr = (int*) calloc(1,sizeof(int));
         else {
-            int *temp = realloc(merged_arr, sizeof(int) *(i+1));
+            int *temp = realloc(merged_arr, sizeof(int) *(i+1));    //increase array size
             merged_arr = temp;
         }
         
-        if(arr1[j] < arr2[k]){
-            merged_arr[i] = arr1[j];
-            ++j;
-        } else {
+        if (j == size_a){               // end of part_a
             merged_arr[i] = arr2[k];
             ++k;
+        } else if (k == size_b){        // end of part_b
+            merged_arr[i] = arr1[j];
+            ++j;
+        } else {                        // compare and insert smaller one
+            if (arr1[j] < arr2[k]) {
+                merged_arr[i] = arr1[j];
+                ++j;
+            } else {
+                merged_arr[i] = arr2[k];
+                ++k;
+            }
         }
         
-        i++;
+        i++;        //increase iterator
         
     }
     
-    free(arr1);
-    free(arr2);
+    free(arr1);     //avoid memory leak
+    free(arr2);     //avoid memory leak
     
     return merged_arr;
     
