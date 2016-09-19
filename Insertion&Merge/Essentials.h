@@ -232,7 +232,7 @@ int *merge_combine(int *arr1, int *arr2, int size_a, int size_b){
 
 int *merge_sort(int *data_set, int size){
     
-    //if(size == 1) return data_set;
+    if(size == 1) return data_set;  //end of depth
     
     int size_a = size/2;
     int size_b = size - size_a;
@@ -254,12 +254,11 @@ int *merge_sort(int *data_set, int size){
     }
     printf("\n");
     
-    if (size == 2) return merge_combine(part_a, part_b, size);
+    free(data_set);     //avoid memory leak
     
-    else if (size == 3)
-        return merge_combine(part_a, merge_sort(part_b, size_b), size);
+    if (size == 2) return merge_combine(part_a, part_b, size_a, size_b);
     
-    else return merge_combine(merge_sort(part_a, size_a), merge_sort(part_b, size_b), size);
+    else return merge_combine(merge_sort(part_a, size_a), merge_sort(part_b, size_b), size_a, size_b);
     
 }
 
