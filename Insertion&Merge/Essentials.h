@@ -26,6 +26,8 @@ int binary_search(int *array, int target, int size);
 int *get_original_data(char *file_path);
 int *merge_combine(int *arr1, int *arr2, int size_a, int size_b);
 int *merge_sort(int *data_set, int size);
+int *three_way_merge_combine(int *arr1, int *arr2, int *arr3, int size_a, int size_b, int size_c);
+int *three_way_merge_sort(int *data_set, int size);
 void set_timer();
 void stop_timer();
 void insertion_sort(int *data_set, int size);
