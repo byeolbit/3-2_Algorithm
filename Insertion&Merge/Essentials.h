@@ -24,7 +24,7 @@ int calculate_time();
 int get_data_size(int *data_set);
 int binary_search(int *array, int target, int size);
 int *get_original_data(char *file_path);
-int *merge_combine(int *arr1, int *arr2, int size);
+int *merge_combine(int *arr1, int *arr2, int size_a, int size_b);
 int *merge_sort(int *data_set, int size);
 void set_timer();
 void stop_timer();
@@ -185,7 +185,7 @@ void binary_insertion_sort(int *data_set, int size){
 
 
 
-int *merge_combine(int *arr1, int *arr2, int size){
+int *merge_combine(int *arr1, int *arr2, int size_a, int size_b){
     
     int *merged_arr = NULL;
     
