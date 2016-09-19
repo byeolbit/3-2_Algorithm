@@ -18,8 +18,14 @@ int main(void){
     
     data_set = get_original_data(file_path);
     
+    set_timer();
+    
     binary_insertion_sort(data_set, data_size);
     
+    stop_timer();
+    
     write_sorted_data(data_set, result_file, data_size);
+    
+    calculate_time();
     
 }
