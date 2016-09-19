@@ -10,11 +10,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <memory.h>
 #include <time.h>
 
 int data_size;
 clock_t start_time;
 clock_t end_time;
+int check_loop;
 
 FILE *open_file(char *file_path, char *op);
 void set_timer();
@@ -35,9 +37,9 @@ void stop_timer(){
 }
 
 int calculate_time(){
-    int msec = (end_time - start_time) * 1000 / CLOCKS_PER_SEC;
-    printf("%d milliseconds\n",msc%1000);
-    return msec;
+    float msec = ((float)(end_time - start_time)) / CLOCKS_PER_SEC;
+    printf("%f milliseconds\n",msec);
+    return (int)msec;
 }
 
 //Get length of array
@@ -124,19 +126,24 @@ int binary_search(int *array, int target, int size){
     
     int low, high, mid;
     low = 0;
-    high = size-1;
+    mid = 0;
+    high = size;
     
     while(low <= high){
-        mid = (low + high) / 2;
+        check_loop++;   //check loops
+        mid = low + (high-low) / 2;
         if(array[mid] > target) high = mid -1;
         else if (array[mid] < target) low = mid +1;
+        else break;
     }
     
-    return mid;
+    return low;
     
 }
 
 void insertion_sort(int *data_set, int size){
+    
+    check_loop = 0;
     
     int i,j,key;
     
@@ -146,6 +153,7 @@ void insertion_sort(int *data_set, int size){
         while(i>=0 && data_set[i]>key){
             data_set[i+1] = data_set[i];
             --i;
+            check_loop++;
         }
         data_set[i+1] = key;
     }
@@ -153,19 +161,21 @@ void insertion_sort(int *data_set, int size){
 
 void binary_insertion_sort(int *data_set, int size){
     
-    int i,j,key;
+    check_loop = 0;
     
-    for (j=1; j<size; j++){
-        key = data_set[j];
-        i = j-1;
+    int i,key;
+    
+    for (i=1; i<size; i++){
+        
+        check_loop++;
+        
+        key = data_set[i];
         
         int target = binary_search(data_set, key, i);
         
-        while(i>=target && data_set[i]>key){
-            data_set[i+1] = data_set[i];
-            --i;
-        }
-        data_set[i+1] = key;
+        memmove(data_set+target+1, data_set+target, sizeof(int)*(i-target));
+        
+        data_set[target] = key;
         
     }
 }
@@ -185,6 +195,7 @@ void write_sorted_data(int *data_set, char *file_path, int size){
     }
     
     printf("\n");   //Console output
+    printf("%d loops\n",check_loop);
     fclose(result_file_pointer);  //close result file pointer
 }
 
