@@ -19,12 +19,15 @@ clock_t end_time;
 int check_loop;
 
 FILE *open_file(char *file_path, char *op);
-void set_timer();
-void stop_timer();
+
 int calculate_time();
-int *get_original_data(char *file_path);
 int get_data_size(int *data_set);
 int binary_search(int *array, int target, int size);
+int *get_original_data(char *file_path);
+int *merge_combine(int *arr1, int *arr2, int size);
+int *merge_sort(int *data_set, int size);
+void set_timer();
+void stop_timer();
 void insertion_sort(int *data_set, int size);
 void write_sorted_data(int *data_set, char *file_path, int size);
 
@@ -178,6 +181,61 @@ void binary_insertion_sort(int *data_set, int size){
         data_set[target] = key;
         
     }
+}
+
+
+
+int *merge_combine(int *arr1, int *arr2, int size){
+    
+    int *merged_arr = NULL;
+    
+    int i,j,k;
+    
+    i = 0;
+    j = 0;
+    k = 0;
+    
+    while((j+k) < size){
+        
+        if (merged_arr == NULL) merged_arr = (int) calloc(1,sizeof(int));
+        else {
+            int *temp = realloc(merged_arr, sizeof(int) *(i+1));
+            merged_arr = temp;
+        }
+        
+        if(arr1[j] > arr[k]){
+            merged_arr[i] = arr1[j];
+            ++j;
+        } else {
+            merged_arr[i] = arr2[k];
+            ++k;
+        }
+        
+        i++;
+        
+    }
+    
+    return merged_arr;
+
+}
+
+int *merge_sort(int *data_set, int size){
+    
+    int *part_a;
+    int *part_b;
+    
+    int size_a = size/2;
+    int size_b = size - size_a;
+    
+    part_a = memmove(data_set, part_a, sizeof(int)*size_a);
+    part_b = memmove(data_set+size_b, part_b, sizeof(int)*size_b);
+    
+    if (size == 2) return merge(part_a, part_b, size);
+    
+    else if (size == 3) return merge(part_a, merge_sort(part_b, size_b), size);
+    
+    else return merge(merge_sort(part_a, size_a), merge_sort(part_b, size_b), size);
+    
 }
 
 void write_sorted_data(int *data_set, char *file_path, int size){
