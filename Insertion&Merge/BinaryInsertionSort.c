@@ -26,6 +26,8 @@ int main(void){
     
     write_sorted_data(data_set, result_file, data_size);
     
+    check_loops();
+    
     calculate_time();
     
 }
