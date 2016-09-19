@@ -20,7 +20,7 @@ int main(void){
     
     set_timer();
     
-    merge_sort(data_set, data_size);
+    data_set = merge_sort(data_set, data_size);
     
     stop_timer();
     
