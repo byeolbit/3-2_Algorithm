@@ -197,7 +197,7 @@ int *merge_combine(int *arr1, int *arr2, int size){
     
     while((j+k) < size){
         
-        if (merged_arr == NULL) merged_arr = (int) calloc(1,sizeof(int));
+        if (merged_arr == NULL) merged_arr = (int*) calloc(1,sizeof(int));
         else {
             int *temp = realloc(merged_arr, sizeof(int) *(i+1));
             merged_arr = temp;
