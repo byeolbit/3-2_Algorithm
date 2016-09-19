@@ -16,7 +16,7 @@ int data_size;
 FILE *open_file(char *file_path, char *op);
 int *get_original_data(char *file_path);
 int get_data_size(int *data_set);
-int binary_search(int *array, ,int target, int size);
+int binary_search(int *array, int target, int size);
 void insertion_sort(int *data_set, int size);
 void write_sorted_data(int *data_set, char *file_path, int size);
 
@@ -110,10 +110,9 @@ int binary_search(int *array, int target, int size){
         mid = (low + high) / 2;
         if(array[mid] > target) high = mid -1;
         else if (array[mid] < target) low = mid +1;
-        else return low
     }
     
-    return -1;
+    return mid;
     
 }
 
@@ -139,11 +138,15 @@ void binary_insertion_sort(int *data_set, int size){
     for (j=1; j<size; j++){
         key = data_set[j];
         i = j-1;
-        while(i>=0 && data_set[i]>key){
-            data_set[i+1] = data_set[i];ㅇ
+        
+        int target = binary_search(data_set, key, i);
+        
+        while(i>=target && data_set[i]>key){
+            data_set[i+1] = data_set[i];
             --i;
         }
         data_set[i+1] = key;
+        
     }
 }
 

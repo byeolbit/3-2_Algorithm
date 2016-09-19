@@ -18,7 +18,7 @@ int main(void){
     
     data_set = get_original_data(file_path);
     
-    insertion_sort(data_set, data_size);
+    binary_insertion_sort(data_set, data_size);
     
     write_sorted_data(data_set, result_file, data_size);
     
