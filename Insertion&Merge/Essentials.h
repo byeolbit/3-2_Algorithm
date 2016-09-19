@@ -230,11 +230,11 @@ int *merge_sort(int *data_set, int size){
     part_a = memmove(data_set, part_a, sizeof(int)*size_a);
     part_b = memmove(data_set+size_b, part_b, sizeof(int)*size_b);
     
-    if (size == 2) return merge(part_a, part_b, size);
+    if (size == 2) return merge_combine(part_a, part_b, size);
     
-    else if (size == 3) return merge(part_a, merge_sort(part_b, size_b), size);
+    else if (size == 3) return merge_combine(part_a, merge_sort(part_b, size_b), size);
     
-    else return merge(merge_sort(part_a, size_a), merge_sort(part_b, size_b), size);
+    else return merge_combine(merge_sort(part_a, size_a), merge_sort(part_b, size_b), size);
     
 }
 
