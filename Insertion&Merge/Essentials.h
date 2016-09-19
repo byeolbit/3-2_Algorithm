@@ -195,7 +195,7 @@ int *merge_combine(int *arr1, int *arr2, int size){
     j = 0;
     k = 0;
     
-    while((j+k) < size){
+    while(i <= size){
         
         if (merged_arr == NULL) merged_arr = (int*) calloc(1,sizeof(int));
         else {
@@ -203,7 +203,7 @@ int *merge_combine(int *arr1, int *arr2, int size){
             merged_arr = temp;
         }
         
-        if(arr1[j] > arr2[k]){
+        if(arr1[j] < arr2[k]){
             merged_arr[i] = arr1[j];
             ++j;
         } else {
@@ -215,24 +215,41 @@ int *merge_combine(int *arr1, int *arr2, int size){
         
     }
     
+    free(arr1);
+    free(arr2);
+    
     return merged_arr;
-
+    
 }
 
 int *merge_sort(int *data_set, int size){
     
-    int *part_a;
-    int *part_b;
+    //if(size == 1) return data_set;
     
     int size_a = size/2;
     int size_b = size - size_a;
     
-    part_a = memmove(data_set, part_a, sizeof(int)*size_a);
-    part_b = memmove(data_set+size_b, part_b, sizeof(int)*size_b);
+    int *part_a = (int*)calloc(size_a, sizeof(int));
+    int *part_b = (int*)calloc(size_b, sizeof(int));
+    
+    memmove(part_a, data_set, sizeof(int)*size_a);
+    int i;
+    printf("part a, size : %d\n",size_a);
+    for( i=0; i<size_a ; i++){
+        printf("%d ", part_a[i]);
+    }
+    printf("\n");
+    printf("part b, size : %d\n",size_b);
+    memmove(part_b, data_set + size_a, sizeof(int)*size_b);
+    for( i=0; i<size_b ; i++){
+        printf("%d ", part_b[i]);
+    }
+    printf("\n");
     
     if (size == 2) return merge_combine(part_a, part_b, size);
     
-    else if (size == 3) return merge_combine(part_a, merge_sort(part_b, size_b), size);
+    else if (size == 3)
+        return merge_combine(part_a, merge_sort(part_b, size_b), size);
     
     else return merge_combine(merge_sort(part_a, size_a), merge_sort(part_b, size_b), size);
     
