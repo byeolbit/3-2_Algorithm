@@ -203,7 +203,7 @@ int *merge_combine(int *arr1, int *arr2, int size){
             merged_arr = temp;
         }
         
-        if(arr1[j] > arr[k]){
+        if(arr1[j] > arr2[k]){
             merged_arr[i] = arr1[j];
             ++j;
         } else {
