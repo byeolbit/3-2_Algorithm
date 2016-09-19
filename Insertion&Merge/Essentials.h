@@ -30,6 +30,8 @@ void set_timer();
 void stop_timer();
 void insertion_sort(int *data_set, int size);
 void write_sorted_data(int *data_set, char *file_path, int size);
+void display_two_array(int *part_a, int *part_b, int size_a, int size_b);
+
 
 void set_timer(){
     start_time = clock();
@@ -230,6 +232,22 @@ int *merge_combine(int *arr1, int *arr2, int size_a, int size_b){
     
 }
 
+void display_two_array(int *part_a, int *part_b, int size_a, int size_b){
+    
+    int i;
+    printf("part a, size : %d\n",size_a);
+    for( i=0; i<size_a ; i++){
+        printf("%d ", part_a[i]);
+    }
+    printf("\n");
+    printf("part b, size : %d\n",size_b);
+    for( i=0; i<size_b ; i++){
+        printf("%d ", part_b[i]);
+    }
+    printf("\n");
+    
+}
+
 int *merge_sort(int *data_set, int size){
     
     if(size == 1) return data_set;  //end of depth
@@ -241,18 +259,9 @@ int *merge_sort(int *data_set, int size){
     int *part_b = (int*)calloc(size_b, sizeof(int));
     
     memmove(part_a, data_set, sizeof(int)*size_a);
-    int i;
-    printf("part a, size : %d\n",size_a);
-    for( i=0; i<size_a ; i++){
-        printf("%d ", part_a[i]);
-    }
-    printf("\n");
-    printf("part b, size : %d\n",size_b);
     memmove(part_b, data_set + size_a, sizeof(int)*size_b);
-    for( i=0; i<size_b ; i++){
-        printf("%d ", part_b[i]);
-    }
-    printf("\n");
+    
+    //display_two_array(part_a, part_b, size_a, size_b);  // Display values
     
     free(data_set);     //avoid memory leak
     
