@@ -24,10 +24,11 @@ int calculate_time();
 int get_data_size(int *data_set);
 int binary_search(int *array, int target, int size);
 int *get_original_data(char *file_path);
-int *merge_combine(int *arr1, int *arr2, int size_a, int size_b);
+int *merge(int *arr1, int *arr2, int size_a, int size_b);
 int *merge_sort(int *data_set, int size);
-int *three_way_merge_combine(int *arr1, int *arr2, int *arr3, int size_a, int size_b, int size_c);
+int *three_way_merge(int *arr1, int *arr2, int *arr3, int size_a, int size_b, int size_c);
 int *three_way_merge_sort(int *data_set, int size);
+
 void set_timer();
 void stop_timer();
 void insertion_sort(int *data_set, int size);
@@ -188,7 +189,7 @@ void binary_insertion_sort(int *data_set, int size){
 
 
 
-int *merge_combine(int *arr1, int *arr2, int size_a, int size_b){
+int *merge(int *arr1, int *arr2, int size_a, int size_b){
     
     int *merged_arr = NULL;
     
@@ -266,9 +267,9 @@ int *merge_sort(int *data_set, int size){
     
     free(data_set);     //avoid memory leak
     
-    if (size == 2) return merge_combine(part_a, part_b, size_a, size_b);
+    if (size == 2) return merge(part_a, part_b, size_a, size_b);
     
-    else return merge_combine(merge_sort(part_a, size_a), merge_sort(part_b, size_b), size_a, size_b);
+    else return merge(merge_sort(part_a, size_a), merge_sort(part_b, size_b), size_a, size_b);
     
 }
 
