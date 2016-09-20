@@ -278,6 +278,31 @@ int *three_way_merge(int *arr1, int *arr2, int *arr3, int size_a, int size_b, in
     return merge(merge(arr1, arr2, size_a, size_b), arr3, size_a + size_b, size_c);
 }
 
+int *three_way_merge_sort(int *data_set, int size){
+    
+    if (size == 1) return data_set;
+    
+    if (size == 2) return merge_sort(data_set, size);
+    
+    int size_a = size/3;
+    int size_b = (size - size_a)/2;
+    int size_c = size-(size_a+size_b);
+    
+    int *part_a = (int*)calloc(size_a, sizeof(int));
+    int *part_b = (int*)calloc(size_b, sizeof(int));
+    int *part_c = (int*)calloc(size_c, sizeof(int));
+    
+    memmove(part_a, data_set, sizeof(int)*size_a);
+    memmove(part_b, data_set + size_a, sizeof(int)*size_b);
+    memmove(part_c, data_set + size_a + size_b, sizeof(int)*size_c);
+    
+    //display_two_array(part_a, part_b, size_a, size_b);
+    
+    free(data_set);
+    
+    return three_way_merge(three_way_merge_sort(part_a, size_a), three_way_merge_sort(part_b, size_b), three_way_merge_sort(part_c, size_c), size_a, size_b, size_c);
+}
+
 void check_loops(){
     printf("%d loops\n",check_loop);
 }
