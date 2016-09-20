@@ -273,6 +273,11 @@ int *merge_sort(int *data_set, int size){
     
 }
 
+int *three_way_merge(int *arr1, int *arr2, int *arr3, int size_a, int size_b, int size_c){
+    
+    return merge(merge(arr1, arr2, size_a, size_b), arr3, size_a + size_b, size_c);
+}
+
 void check_loops(){
     printf("%d loops\n",check_loop);
 }
