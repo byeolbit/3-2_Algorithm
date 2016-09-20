@@ -191,6 +191,8 @@ void binary_insertion_sort(int *data_set, int size){
 
 int *merge(int *arr1, int *arr2, int size_a, int size_b){
     
+    check_loop++;
+    
     int *merged_arr = NULL;
     
     int i,j,k;
