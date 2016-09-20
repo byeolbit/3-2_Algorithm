@@ -16,7 +16,7 @@
 int data_size;
 clock_t start_time;
 clock_t end_time;
-int check_loop;
+long check_loop;
 
 FILE *open_file(char *file_path, char *op);
 
@@ -306,7 +306,8 @@ int *three_way_merge_sort(int *data_set, int size){
 }
 
 void check_loops(){
-    printf("%d loops\n",check_loop);
+    printf("%ld loops\n",check_loop);
+    check_loop = 0;
 }
 
 void write_sorted_data(int *data_set, char *file_path, int size){
