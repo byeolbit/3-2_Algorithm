@@ -20,6 +20,7 @@ long check_loop;
 
 FILE *open_file(char *file_path, char *op);
 
+int min(int a, int b, int c);
 int calculate_time();
 int get_data_size(int *data_set);
 int binary_search(int *array, int target, int size);
@@ -275,9 +276,146 @@ int *merge_sort(int *data_set, int size){
     
 }
 
+int min(int a, int b, int c){
+    
+    int min = 0;
+    
+    if(a < b) min = a;
+    else min = b;
+    
+    if(min > c) return c;
+    else return min;
+    
+}
+
 int *three_way_merge(int *arr1, int *arr2, int *arr3, int size_a, int size_b, int size_c){
     
-    return merge(merge(arr1, arr2, size_a, size_b), arr3, size_a + size_b, size_c);
+    check_loop++;
+    
+    int *merged_arr = NULL;
+    
+    int i,j,k,l, total_size;
+    
+    i = 0;
+    j = 0;
+    k = 0;
+    l = 0;
+    total_size = size_a + size_b + size_c;
+    
+    while(i <= total_size){
+        
+        if (merged_arr == NULL) merged_arr = (int*) calloc(1,sizeof(int));
+        else {
+            int *temp = realloc(merged_arr, sizeof(int) *(i+1));    //increase array size
+            merged_arr = temp;
+        }
+        
+        if (!(j == size_a || k == size_b || l == size_c)){
+            
+            int min_value = min(arr1[j],arr2[k],arr3[l]);
+            
+            if (min_value == arr1[j]){
+                merged_arr[i] = arr1[j];
+                ++j;
+            } else if (min_value == arr2[k]){
+                merged_arr[i] = arr2[k];
+                ++k;
+            } else {
+                merged_arr[i] = arr3[l];
+                ++l;
+            }
+            
+        } else if (j == size_a){
+            
+            while(i <= total_size){
+                
+                if (k == size_b){               // end of part_b
+                    merged_arr[i] = arr3[l];    // put c
+                    ++l;
+                } else if (l == size_c){        // end of part_c
+                    merged_arr[i] = arr2[k];    // put b
+                    ++k;
+                } else {
+                    if (arr2[k] < arr3[l]) {
+                        merged_arr[i] = arr2[k];
+                        ++k;
+                    } else {
+                        merged_arr[i] = arr3[l];
+                        ++l;
+                    }
+                }
+                
+                if(++i != total_size){
+                    int *temp = realloc(merged_arr, sizeof(int) *(i+1));    //increase array size
+                    merged_arr = temp;
+                } else break;
+            }
+            
+        } else if (k == size_b){
+            
+            while(i <= total_size){
+                
+                if (j == size_a){               // end of part_a
+                    merged_arr[i] = arr3[l];    // put c
+                    ++l;
+                } else if (l == size_c){        // end of part_c
+                    merged_arr[i] = arr1[j];    // put a
+                    ++j;
+                } else {
+                    if (arr1[j] < arr3[l]) {
+                        merged_arr[i] = arr1[j];
+                        ++j;
+                    } else {
+                        merged_arr[i] = arr3[l];
+                        ++l;
+                    }
+                }
+                
+                if(++i != total_size){
+                    int *temp = realloc(merged_arr, sizeof(int) *(i+1));    //increase array size
+                    merged_arr = temp;
+                } else break;
+            }
+            
+        } else {
+            
+            while(i <= total_size){
+                
+                if (j == size_a){               // end of part_a
+                    merged_arr[i] = arr2[k];    // put b
+                    ++k;
+                } else if (k == size_b){        // end of part_b
+                    merged_arr[i] = arr1[j];    // put a
+                    ++j;
+                } else {
+                    if (arr1[j] < arr2[k]) {
+                        merged_arr[i] = arr1[j];
+                        ++j;
+                    } else {
+                        merged_arr[i] = arr2[k];
+                        ++k;
+                    }
+                }
+                
+                if(++i != total_size){
+                    int *temp = realloc(merged_arr, sizeof(int) *(i+1));    //increase array size
+                    merged_arr = temp;
+                } else break;
+                
+            }
+            
+        }
+        
+        i++;        //increase iterator
+        
+    }
+    
+    free(arr1);     //avoid memory leak
+    free(arr2);     //avoid memory leak
+    free(arr3);     //avoid memory leak
+    
+    return merged_arr;
+    
 }
 
 int *three_way_merge_sort(int *data_set, int size){
