@@ -29,12 +29,14 @@ int *merge(int *arr1, int *arr2, int size_a, int size_b);
 int *merge_sort(int *data_set, int size);
 int *three_way_merge(int *arr1, int *arr2, int *arr3, int size_a, int size_b, int size_c);
 int *three_way_merge_sort(int *data_set, int size);
+int *insertion_sort(int *data_set, int size);
+int *binary_insertion_sort(int *data_set, int size);
 
 void set_timer();
 void stop_timer();
-void insertion_sort(int *data_set, int size);
 void write_sorted_data(int *data_set, char *file_path, int size);
 void display_two_array(int *part_a, int *part_b, int size_a, int size_b);
+void sort_extra(int **merged_arr_p, int *i_p, int total_size, int *k_p, int *arr2, int *j_p, int *arr1, int size_b, int size_a);
 
 void set_timer(){
     start_time = clock();
@@ -140,7 +142,7 @@ int binary_search(int *array, int target, int size){
     while(low <= high){
         check_loop++;   //check loops
         mid = low + (high-low) / 2;
-        if(array[mid] > target) high = mid -1;
+        if (array[mid] > target) high = mid -1;
         else if (array[mid] < target) low = mid +1;
         else break;
     }
@@ -149,7 +151,7 @@ int binary_search(int *array, int target, int size){
     
 }
 
-void insertion_sort(int *data_set, int size){
+int *insertion_sort(int *data_set, int size){
     
     check_loop = 0;
     
@@ -165,9 +167,11 @@ void insertion_sort(int *data_set, int size){
         }
         data_set[i+1] = key;
     }
+    
+    return data_set;
 }
 
-void binary_insertion_sort(int *data_set, int size){
+int *binary_insertion_sort(int *data_set, int size){
     
     check_loop = 0;
     
@@ -186,6 +190,8 @@ void binary_insertion_sort(int *data_set, int size){
         data_set[target] = key;
         
     }
+    
+    return data_set;
 }
 
 
@@ -194,7 +200,7 @@ int *merge(int *arr1, int *arr2, int size_a, int size_b){
     
     check_loop++;
     
-    int *merged_arr = NULL;
+    int *merged_arr = (int*) calloc(1,sizeof(int));
     
     int i,j,k;
     
@@ -202,33 +208,7 @@ int *merge(int *arr1, int *arr2, int size_a, int size_b){
     j = 0;
     k = 0;
     
-    while(i <= size_a + size_b){
-        
-        if (merged_arr == NULL) merged_arr = (int*) calloc(1,sizeof(int));
-        else {
-            int *temp = realloc(merged_arr, sizeof(int) *(i+1));    //increase array size
-            merged_arr = temp;
-        }
-        
-        if (j == size_a){               // end of part_a
-            merged_arr[i] = arr2[k];
-            ++k;
-        } else if (k == size_b){        // end of part_b
-            merged_arr[i] = arr1[j];
-            ++j;
-        } else {                        // compare and insert smaller one
-            if (arr1[j] < arr2[k]) {
-                merged_arr[i] = arr1[j];
-                ++j;
-            } else {
-                merged_arr[i] = arr2[k];
-                ++k;
-            }
-        }
-        
-        i++;        //increase iterator
-        
-    }
+    sort_extra(&merged_arr, &i, size_a+size_b, &k, arr2, &j, arr1, size_b, size_a);
     
     free(arr1);     //avoid memory leak
     free(arr2);     //avoid memory leak
@@ -252,6 +232,27 @@ void display_two_array(int *part_a, int *part_b, int size_a, int size_b){
     printf("\n");
     
 }
+
+void display_three_array(int *part_a, int *part_b, int *part_c, int size_a, int size_b, int size_c){
+    
+    int i;
+    printf("part a, size : %d\n",size_a);
+    for( i=0; i<size_a ; i++){
+        printf("%d ", part_a[i]);
+    }
+    printf("\n");
+    printf("part b, size : %d\n",size_b);
+    for( i=0; i<size_b ; i++){
+        printf("%d ", part_b[i]);
+    }
+    printf("\n");
+    printf("part c, size : %d\n",size_c);
+    for( i=0; i<size_c ; i++){
+        printf("%d ", part_c[i]);
+    }
+    printf("\n");
+}
+
 
 int *merge_sort(int *data_set, int size){
     
@@ -378,7 +379,20 @@ int *three_way_merge_sort(int *data_set, int size){
     
     if (size == 1) return data_set;
     
-    if (size == 2) return merge_sort(data_set, size);
+    if (size == 2) {
+        
+        if(data_set[0]>data_set[1]) {
+            
+            int temp;
+            
+            temp = data_set[0];
+            data_set[0] = data_set[1];
+            data_set[1] = temp;
+            
+        }
+        
+        return data_set;
+    }
     
     int size_a = size/3;
     int size_b = (size - size_a)/2;
@@ -392,7 +406,7 @@ int *three_way_merge_sort(int *data_set, int size){
     memmove(part_b, data_set + size_a, sizeof(int)*size_b);
     memmove(part_c, data_set + size_a + size_b, sizeof(int)*size_c);
     
-    //display_two_array(part_a, part_b, size_a, size_b);
+    //display_three_array(part_a, part_b, part_c, size_a, size_b, size_c);
     
     free(data_set);
     
