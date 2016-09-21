@@ -13,6 +13,9 @@
 #include <memory.h>
 #include <time.h>
 
+#define TRUE    1
+#define FALSE   0
+
 int data_size;
 clock_t start_time;
 clock_t end_time;
@@ -34,7 +37,7 @@ int *binary_insertion_sort(int *data_set, int size);
 
 void set_timer();
 void stop_timer();
-void write_sorted_data(int *data_set, char *file_path, int size);
+void write_sorted_data(int *data_set, char *file_path, int size, int print_count);
 void display_two_array(int *part_a, int *part_b, int size_a, int size_b);
 void sort_extra(int **merged_arr_p, int *i_p, int total_size, int *k_p, int *arr2, int *j_p, int *arr1, int size_b, int size_a);
 
@@ -78,7 +81,7 @@ FILE *open_file(char *file_path, char *op){
 //Get a set of data from file
 int *get_original_data(char *file_path){
     
-    FILE *data_file_pointer = open_file(file_path, "r");
+    FILE *data_file_pointer = open_file(file_path, "r+");
     
     int *data_set = (int *) calloc(1,sizeof(int));
     char *data = NULL;
@@ -418,9 +421,9 @@ void check_loops(){
     check_loop = 0;
 }
 
-void write_sorted_data(int *data_set, char *file_path, int size){
+void write_sorted_data(int *data_set, char *file_path, int size, int print_count){
     
-    FILE *result_file_pointer = open_file(file_path, "w");
+    FILE *result_file_pointer = open_file(file_path, "w+");
     int i;
     
     for (i=0; i<size; i++){
@@ -432,8 +435,10 @@ void write_sorted_data(int *data_set, char *file_path, int size){
         }
     }
     
-    printf("\n");   //Console output
+    if (print_count) fprintf(result_file_pointer,",%ld",check_loop);
     fclose(result_file_pointer);  //close result file pointer
+    
+    printf("\n");   //Console output
 }
 
 #endif /* Essentials_h */

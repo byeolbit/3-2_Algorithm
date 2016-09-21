@@ -24,7 +24,7 @@ int main(void){
     
     stop_timer();
     
-    write_sorted_data(data_set, result_file, data_size);
+    write_sorted_data(data_set, result_file, data_size, TRUE);
     
     check_loops();
     
