@@ -14,9 +14,9 @@
 #include <memory.h>
 #include "Essential.h"
 
-#define PARENT(i)       i / 2       //get node parent
-#define LEFT_CHILD(i)   i * 2       //get node left-child
-#define RIGHT_CHILD(i)  i * 2 + 1   //get node right-child
+#define PARENT(i)       (i - 1) / 2         //get node parent
+#define LEFT_CHILD(i)   (i * 2) + 1         //get node left-child
+#define RIGHT_CHILD(i)  (i * 2) + 2         //get node right-child
 
 struct node {
     int key;
@@ -47,10 +47,10 @@ void max_heapify(struct priority_queue p_queue, int i){
     int R = RIGHT_CHILD(i);
     int largest;
     
-    if(L <= p_queue.size && p_queue.heap[L].key > p_queue.heap[i].key) largest = L;
+    if(L <= p_queue.size-1 && p_queue.heap[L].key > p_queue.heap[i].key) largest = L;
     else largest = i;
     
-    if(R <= p_queue.size && p_queue.heap[R].key > p_queue.heap[largest].key) largest = R;
+    if(R <= p_queue.size-1 && p_queue.heap[R].key > p_queue.heap[largest].key) largest = R;
     
     if(largest != i){
         struct node temp = p_queue.heap[i];
@@ -62,7 +62,7 @@ void max_heapify(struct priority_queue p_queue, int i){
 
 void build_max_heap(struct priority_queue p_queue){
     int i = 0;
-    for(i = p_queue.size/2; i>0 ; i--){
+    for(i = (p_queue.size-1)/2; i>=0 ; i--){
         max_heapify(p_queue, i);
     }
 }
@@ -73,16 +73,8 @@ struct priority_queue build_heap_data(FILE *fp) {
     struct priority_queue new_queue;
     new_queue.size = 0;
     
-    /*
-    char *line = NULL;
-    size_t size = 0;
-    ssize_t read;
-    
-    while((read = (getline(&line, &size, fp))) != -1){
-        printf("%s",line);
-    }
-    */
     while(!feof(fp)){
+        
         if(new_queue.size == 0){
             new_queue.heap = calloc(1,sizeof(struct node));
         } else {
@@ -96,9 +88,9 @@ struct priority_queue build_heap_data(FILE *fp) {
         
         fscanf(fp, "%d, ",&new_queue.heap[new_queue.size].key);
         new_queue.heap[new_queue.size].value = NULL;
-        read = getdelim(&new_queue.heap[new_queue.size].value,&len,'\0',fp);
+        read = getline(&new_queue.heap[new_queue.size].value,&len,fp);
         
-        new_queue.heap[new_queue.size].value;
+        new_queue.heap[new_queue.size].value = strtok(new_queue.heap[new_queue.size].value,"\n");
         
         new_queue.size++;
     }
@@ -145,7 +137,7 @@ struct node increase_key(struct priority_queue p_queue, int x, int k){
     
     int i = 0;
     
-    //dfs로 다시 구현해볼것
+    /* bfs */
     for(i = 0; i<p_queue.size; i++){
         if(p_queue.heap[i].key == x){
             p_queue.heap[i].key = k;
@@ -184,8 +176,12 @@ void print_queue(struct priority_queue p_queue){
     
     int i = 0;
     
-    printf("현재 작업목록에 있는 노드 목록입니다.\n");
-    for(i=0; i<p_queue.size; i++) printf("%d, %s",p_queue.heap[i].key,p_queue.heap[i].value);
+    printf("**** 현재 우선 순위 큐에 저장되어 있는 작업 대기 목록은 다음과 같습니다 ****\n\n");
+    for(i=0; i<p_queue.size; i++) printf("%3d, %s\n",p_queue.heap[i].key,p_queue.heap[i].value);
+    printf("\n--------------------------------------------------------\n");
+    printf("1. 작업 추가\t\t2. 최대값\t\t3. 최대 우선순위 작업 처리\n");
+    printf("4. 원소 키값 증가\t5. 작업제거\t6. 종료\n");
+    printf("--------------------------------------------------------\n");
     
 }
 
