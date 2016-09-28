@@ -9,7 +9,11 @@
 #include "Heap.h"
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    printf("Hello, World!\n");
-    return 0;
+    
+    struct priority_queue p_queue;
+    
+    p_queue = build_heap_data(open_file("/Users/sanggyeongjo/git/3-2_Algorithm/maxHeap/maxHeap/data03.txt", "r+"));
+    
+    print_queue(p_queue);
+    
 }
