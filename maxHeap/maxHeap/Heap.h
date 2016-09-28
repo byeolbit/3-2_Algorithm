@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <memory.h>
 #include "Essential.h"
 
 #define PARENT(i)       i / 2       //get node parent
@@ -28,15 +29,17 @@ struct priority_queue {
 };
 
 
-void max_heapify(struct priority_queue p_queue, int i);         //Sort nodes of heap
-void build_max_heap(struct priority_queue p_queue);             //Make heap to max-heap
-struct priority_queue build_heap_data(FILE *fp);                //Get heap data from file
+void max_heapify(struct priority_queue p_queue, int i);                 //Sort nodes of heap
+void build_max_heap(struct priority_queue p_queue);                     //Make heap to max-heap
+struct priority_queue build_heap_data(FILE *fp);                        //Get heap data from file
 
-int insert(struct priority_queue p_queue, struct node x);       //Insert x to heap
-int *max(struct priority_queue p_queue);                        //Find max element in heap
-int *extract(struct priority_queue p_queue);                    //Remove max element in heap
-int increase_key(struct priority_queue p_queue, int x, int k);  //Increase value of x to k
-int h_delete(struct priority_queue p_queue, int x);             //Delete element x
+int insert(struct priority_queue p_queue, struct node x);               //Insert x to heap
+struct node max(struct priority_queue p_queue);                         //Find max element in heap
+struct node extract(struct priority_queue p_queue);                     //Remove max element in heap
+struct node increase_key(struct priority_queue p_queue, int x, int k);  //Increase value of x to k
+struct node h_delete(struct priority_queue p_queue, int x);             //Delete element x
+
+void print_queue(struct priority_queue p_queue);
 
 void max_heapify(struct priority_queue p_queue, int i){
     
@@ -70,6 +73,15 @@ struct priority_queue build_heap_data(FILE *fp) {
     struct priority_queue new_queue;
     new_queue.size = 0;
     
+    /*
+    char *line = NULL;
+    size_t size = 0;
+    ssize_t read;
+    
+    while((read = (getline(&line, &size, fp))) != -1){
+        printf("%s",line);
+    }
+    */
     while(!feof(fp)){
         if(new_queue.size == 0){
             new_queue.heap = calloc(1,sizeof(struct node));
@@ -78,9 +90,20 @@ struct priority_queue build_heap_data(FILE *fp) {
             temp = realloc(new_queue.heap, (new_queue.size + 1) * sizeof(struct node));
             new_queue.heap = temp;
         }
-        fscanf(fp, "%d, %s",&new_queue.heap[new_queue.size].key, new_queue.heap[new_queue.size].value);
+        
+        size_t len = 0;
+        ssize_t read;
+        
+        fscanf(fp, "%d, ",&new_queue.heap[new_queue.size].key);
+        new_queue.heap[new_queue.size].value = NULL;
+        read = getdelim(&new_queue.heap[new_queue.size].value,&len,'\0',fp);
+        
+        new_queue.heap[new_queue.size].value;
+        
         new_queue.size++;
     }
+    
+    fclose(fp);
     
     return new_queue;
 };
@@ -92,11 +115,79 @@ int insert(struct priority_queue p_queue, struct node x){
     p_queue.heap[p_queue.size] = x;
     p_queue.size++;
     
-    max_heapify(p_queue, p_queue.size);
+    max_heapify(p_queue, p_queue.size-1);
     
     return 1;
 }
 
+struct node max(struct priority_queue p_queue){
+
+    return p_queue.heap[0];
+    
+}
+
+struct node extract_max(struct priority_queue p_queue){
+    
+    struct node max = p_queue.heap[0];
+    
+    memmove(p_queue.heap+1, p_queue.heap, (p_queue.size) * sizeof(struct node));
+    
+    struct node *temp;
+    temp = realloc(p_queue.heap, (p_queue.size) * sizeof(struct node));
+    p_queue.heap = temp;
+    p_queue.size--;
+    
+    return max;
+    
+}
+
+struct node increase_key(struct priority_queue p_queue, int x, int k){
+    
+    int i = 0;
+    
+    //dfs로 다시 구현해볼것
+    for(i = 0; i<p_queue.size; i++){
+        if(p_queue.heap[i].key == x){
+            p_queue.heap[i].key = k;
+            break;
+        }
+    }
+    
+    build_max_heap(p_queue);
+    
+    return p_queue.heap[i];
+    
+}
+
+struct node h_delete(struct priority_queue p_queue, int x){
+    
+    int i = 0;
+    
+    for (i = 0; i<p_queue.size; i++) if (p_queue.heap[i].key == x) break;
+    
+    struct node d_node = p_queue.heap[i];
+    
+    memmove(p_queue.heap+i+1, p_queue.heap+i, (p_queue.size-i) * sizeof(struct node));
+    
+    struct node *temp;
+    temp = realloc(p_queue.heap, (p_queue.size) * sizeof(struct node));
+    p_queue.heap = temp;
+    p_queue.size--;
+    
+    build_max_heap(p_queue);
+    
+    return d_node;
+    
+}
+
+void print_queue(struct priority_queue p_queue){
+    
+    int i = 0;
+    
+    printf("현재 작업목록에 있는 노드 목록입니다.\n");
+    for(i=0; i<p_queue.size; i++) printf("%d, %s",p_queue.heap[i].key,p_queue.heap[i].value);
+    
+}
 
 
 #endif /* Heap_h */
