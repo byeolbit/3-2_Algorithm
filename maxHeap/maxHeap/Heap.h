@@ -29,40 +29,40 @@ struct priority_queue {
 };
 
 
-void max_heapify(struct priority_queue p_queue, int i);                 //Sort nodes of heap
-void build_max_heap(struct priority_queue p_queue);                     //Make heap to max-heap
+void max_heapify(struct priority_queue *p_queue, int i);                 //Sort nodes of heap
+void build_max_heap(struct priority_queue *p_queue);                     //Make heap to max-heap
 struct priority_queue build_heap_data(FILE *fp);                        //Get heap data from file
 
-int insert(struct priority_queue p_queue, struct node x);               //Insert x to heap
-struct node max(struct priority_queue p_queue);                         //Find max element in heap
-struct node extract(struct priority_queue p_queue);                     //Remove max element in heap
-struct node increase_key(struct priority_queue p_queue, int x, int k);  //Increase value of x to k
-struct node h_delete(struct priority_queue p_queue, int x);             //Delete element x
+int insert(struct priority_queue *p_queue, struct node x);               //Insert x to heap
+struct node max(struct priority_queue *p_queue);                         //Find max element in heap
+struct node extract(struct priority_queue *p_queue);                     //Remove max element in heap
+struct node increase_key(struct priority_queue *p_queue, int x, int k);  //Increase value of x to k
+struct node h_delete(struct priority_queue *p_queue, int x);             //Delete element x
 
-void print_queue(struct priority_queue p_queue);
+void print_queue(struct priority_queue *p_queue);
 
-void max_heapify(struct priority_queue p_queue, int i){
+void max_heapify(struct priority_queue *p_queue, int i){
     
     int L = LEFT_CHILD(i);
     int R = RIGHT_CHILD(i);
     int largest;
     
-    if(L <= p_queue.size-1 && p_queue.heap[L].key > p_queue.heap[i].key) largest = L;
+    if(L <= p_queue->size-1 && p_queue->heap[L].key > p_queue->heap[i].key) largest = L;
     else largest = i;
     
-    if(R <= p_queue.size-1 && p_queue.heap[R].key > p_queue.heap[largest].key) largest = R;
+    if(R <= p_queue->size-1 && p_queue->heap[R].key > p_queue->heap[largest].key) largest = R;
     
     if(largest != i){
-        struct node temp = p_queue.heap[i];
-        p_queue.heap[i] = p_queue.heap[largest];
-        p_queue.heap[largest] = temp;
+        struct node temp = p_queue->heap[i];
+        p_queue->heap[i] = p_queue->heap[largest];
+        p_queue->heap[largest] = temp;
         max_heapify(p_queue, largest);
     }
 }
 
-void build_max_heap(struct priority_queue p_queue){
+void build_max_heap(struct priority_queue *p_queue){
     int i = 0;
-    for(i = (p_queue.size-1)/2; i>=0 ; i--){
+    for(i = (p_queue->size-1)/2; i>=0 ; i--){
         max_heapify(p_queue, i);
     }
 }
@@ -100,71 +100,92 @@ struct priority_queue build_heap_data(FILE *fp) {
     return new_queue;
 };
 
-int insert(struct priority_queue p_queue, struct node x){
+int insert(struct priority_queue *p_queue, struct node x){
     
     struct node *temp;
-    temp = realloc(p_queue.heap, (p_queue.size + 1) * sizeof(struct node));
-    p_queue.heap[p_queue.size] = x;
-    p_queue.size++;
+    temp = realloc(p_queue->heap, (p_queue->size + 1) * sizeof(struct node));
+    p_queue->heap = temp;
+    p_queue->heap[p_queue->size] = x;
+    p_queue->size++;
     
-    max_heapify(p_queue, p_queue.size-1);
+    build_max_heap(p_queue);
     
     return 1;
 }
 
-struct node max(struct priority_queue p_queue){
+struct node max(struct priority_queue *p_queue){
 
-    return p_queue.heap[0];
+    return p_queue->heap[0];
     
 }
 
-struct node extract_max(struct priority_queue p_queue){
+struct node extract_max(struct priority_queue *p_queue){
     
-    struct node max = p_queue.heap[0];
+    struct node max = p_queue->heap[0];
     
-    memmove(p_queue.heap+1, p_queue.heap, (p_queue.size) * sizeof(struct node));
+    memmove(p_queue->heap, p_queue->heap+1, (p_queue->size) * sizeof(struct node));
     
     struct node *temp;
-    temp = realloc(p_queue.heap, (p_queue.size) * sizeof(struct node));
-    p_queue.heap = temp;
-    p_queue.size--;
+    temp = realloc(p_queue->heap, (p_queue->size) * sizeof(struct node));
+    p_queue->heap = temp;
+    p_queue->size--;
+    
+    build_max_heap(p_queue);
     
     return max;
     
 }
 
-struct node increase_key(struct priority_queue p_queue, int x, int k){
+struct node increase_key(struct priority_queue *p_queue, int x, int k){
     
     int i = 0;
+    int chk = 0;
     
     /* bfs */
-    for(i = 0; i<p_queue.size; i++){
-        if(p_queue.heap[i].key == x){
-            p_queue.heap[i].key = k;
+    for(i = 0; i<p_queue->size; i++){
+        if(p_queue->heap[i].key == x){
+            p_queue->heap[i].key += k;
+            chk = 1;
             break;
         }
     }
     
+    if(chk == 0){
+        struct node d_node;
+        d_node.key = -1;
+        d_node.value = NULL;
+        return d_node;
+    }
+    
+    
     build_max_heap(p_queue);
     
-    return p_queue.heap[i];
+    return p_queue->heap[i];
     
 }
 
-struct node h_delete(struct priority_queue p_queue, int x){
+struct node h_delete(struct priority_queue *p_queue, int x){
     
     int i = 0;
+    int chk = 0;
     
-    for (i = 0; i<p_queue.size; i++) if (p_queue.heap[i].key == x) break;
+    for (i = 0; i<p_queue->size; i++) if (p_queue->heap[i].key == x) {chk=1; break;}
     
-    struct node d_node = p_queue.heap[i];
+    if(chk == 0){
+        struct node d_node;
+        d_node.key = -1;
+        d_node.value = NULL;
+        return d_node;
+    }
     
-    memmove(p_queue.heap+i+1, p_queue.heap+i, (p_queue.size-i) * sizeof(struct node));
+    struct node d_node = p_queue->heap[i];
+    
+    memmove(p_queue->heap+i, p_queue->heap+i+1, (p_queue->size-i) * sizeof(struct node));
     
     struct node *temp;
-    temp = realloc(p_queue.heap, (p_queue.size) * sizeof(struct node));
-    p_queue.heap = temp;
-    p_queue.size--;
+    temp = realloc(p_queue->heap, (p_queue->size) * sizeof(struct node));
+    p_queue->heap = temp;
+    p_queue->size--;
     
     build_max_heap(p_queue);
     
@@ -172,16 +193,12 @@ struct node h_delete(struct priority_queue p_queue, int x){
     
 }
 
-void print_queue(struct priority_queue p_queue){
+void print_queue(struct priority_queue *p_queue){
     
     int i = 0;
     
     printf("**** 현재 우선 순위 큐에 저장되어 있는 작업 대기 목록은 다음과 같습니다 ****\n\n");
-    for(i=0; i<p_queue.size; i++) printf("%3d, %s\n",p_queue.heap[i].key,p_queue.heap[i].value);
-    printf("\n--------------------------------------------------------\n");
-    printf("1. 작업 추가\t\t2. 최대값\t\t3. 최대 우선순위 작업 처리\n");
-    printf("4. 원소 키값 증가\t5. 작업제거\t6. 종료\n");
-    printf("--------------------------------------------------------\n");
+    for(i=0; i<p_queue->size; i++) printf("%3d, %s\n",p_queue->heap[i].key,p_queue->heap[i].value);
     
 }
 
