@@ -14,7 +14,8 @@
 int *build_dataset(FILE *fp);
 int partition(int *data_set, int f, int l);
 int randomized_partition(int *data_set, int f, int l);
-int *quick_sort(int *data_set, int f, int k);
+void quick_sort(int *data_set, int f, int k);
+int size_of_dataset;
 
 int *build_dataset(FILE *fp)
 {
@@ -34,6 +35,8 @@ int *build_dataset(FILE *fp)
     }
     fclose(fp);
     
+    size_of_dataset = read_count;
+    
     return data_set;
 }
 
@@ -41,37 +44,43 @@ int partition(int *data_set, int f, int l)
 {
     int x = data_set[l];
     int i = f-1;
-    int j = f;
     
-    for(j=f; j+1 != i; j++)
+    for(int j=f; j<l; j++)
     {
         if(data_set[j]<=x)
         {
-            int swap_temp = data_set[++i];
-            data_set[i] = data_set[j];
-            data_set[j] = swap_temp;
+            swap_int_arr(data_set, ++i, j);
         }
-        int swap_temp = data_set[++i];
-        data_set[i] = data_set[l];
-        data_set[l] = swap_temp;
     }
+    swap_int_arr(data_set, ++i, l);
     return i;
 }
 
-int randomized_partition(int *data_set, int f, int l){
-    
+int randomized_partition(int *data_set, int f, int l)
+{
+    int i = get_random(f, l);
+    swap_int_arr(data_set, l, i);
     return partition(data_set, f, l);
 }
 
-int *quick_sort(int *data_set, int f, int k)
+void quick_sort(int *data_set, int f, int k)
 {
     if (f<k)
     {
         int q = partition(data_set, f, k);
-        quick_sort(data_set, q, q-1);
+        quick_sort(data_set, f, q-1);
         quick_sort(data_set, q+1, k);
     }
-    return data_set;
+}
+
+void quick_sort_randomized(int *data_set, int f, int k)
+{
+    if (f<k)
+    {
+        int q = randomized_partition(data_set, f, k);
+        quick_sort_randomized(data_set, f, q-1);
+        quick_sort_randomized(data_set, q+1, k);
+    }
 }
 
 
