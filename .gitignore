@@ -1,6 +1,7 @@
 .idea/
 .idea
 *.xocdeproj
+*.xcodeproj/
 *.out
 *.zip
 .DS_Store
