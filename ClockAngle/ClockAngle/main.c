@@ -26,6 +26,13 @@ int main(int argc, const char * argv[])
 
 void get_input(int *hour, int *min)
 {
+    while(1){
+        printf("Please input time(hh:mm)\n");
+        scanf("%d:%d",hour, min);
+        if(*hour < 0 || *hour > 12) printf("Wrong hour input\n");
+        else if(*min < 0 || *min >59) printf("Wrong minute input\n");
+        else break;
+    }
 }
 
 float calc_angle(int hour, int min)
