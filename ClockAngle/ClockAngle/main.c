@@ -30,8 +30,8 @@ void get_input(int *hour, int *min)
     while(1){
         printf("Please input time(hh:mm)\n");
         scanf("%d:%d",hour, min);
-        if(*hour < 0 || *hour > 11) printf("Wrong hour input\n");
-        else if(*min < 0 || *min >59) printf("Wrong minute input\n");
+        if(*hour < 0 || *hour > 11) printf("Wrong hour input(hour : 0~11)\n");
+        else if(*min < 0 || *min >59) printf("Wrong minute input(minute : 0~59)\n");
         else break;
     }
 }
