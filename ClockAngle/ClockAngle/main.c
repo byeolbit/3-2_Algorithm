@@ -29,10 +29,11 @@ void get_input(int *hour, int *min)
 {
     while(1)
     {
-        printf("Please input time(hh:mm)\n");
+        printf("Please input time\nFormat(hh:mm) range(0:00~24:00)\n");
         scanf("%d:%d",hour, min);
-        if(*hour < 0 || *hour > 24) printf("Wrong hour input(hour : 0~11)\n");
+        if(*hour < 0 || *hour > 24) printf("Wrong hour input(hour : 0~24)\n");
         else if(*min < 0 || *min >59) printf("Wrong minute input(minute : 0~59)\n");
+        else if(*hour == 24 && *min >0) printf("Out of boundary(0:00~24:00)\n");
         else break;
     }
 }
@@ -45,6 +46,7 @@ float get_difference(float h_angle, float m_angle)
 
 float get_hour_angle(int hour, int min)
 {
+    if(hour>11) hour -= 12;
     return (hour*30) + (min*0.5);
 }
 
@@ -70,7 +72,7 @@ void ask_exit()
         char ans;
         printf("Exit?(y/n) : ");
         scanf(" %c", &ans);
-        if (ans == 'Y' || ans =='Y') exit(1);
+        if (ans == 'Y' || ans =='y') exit(1);
         else if (ans =='N' || ans == 'n') break;
         else printf("Wrong input\n");
     }
