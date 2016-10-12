@@ -35,6 +35,12 @@ void get_input(int *hour, int *min)
     }
 }
 
+float get_difference(float h_angle, float m_angle)
+{
+    if(h_angle>m_angle) return h_angle - m_angle;
+    else return m_angle - h_angle;
+}
+
 float calc_angle(int hour, int min)
 {
     return get_difference(get_hour_angle(hour), get_min_angle(min));
