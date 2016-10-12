@@ -27,10 +27,11 @@ int main(int argc, const char * argv[])
 
 void get_input(int *hour, int *min)
 {
-    while(1){
+    while(1)
+    {
         printf("Please input time(hh:mm)\n");
         scanf("%d:%d",hour, min);
-        if(*hour < 0 || *hour > 11) printf("Wrong hour input(hour : 0~11)\n");
+        if(*hour < 0 || *hour > 24) printf("Wrong hour input(hour : 0~11)\n");
         else if(*min < 0 || *min >59) printf("Wrong minute input(minute : 0~59)\n");
         else break;
     }
@@ -38,8 +39,8 @@ void get_input(int *hour, int *min)
 
 float get_difference(float h_angle, float m_angle)
 {
-    if(h_angle>m_angle) return h_angle - m_angle;
-    else return m_angle - h_angle;
+    if(h_angle>m_angle) return (h_angle - m_angle > 180 ? 360 - (h_angle - m_angle) : h_angle - m_angle);
+    else return (m_angle - h_angle > 180 ? 360 - (m_angle - h_angle) : m_angle - h_angle);
 }
 
 float get_hour_angle(int hour, int min)
@@ -64,12 +65,13 @@ void print_result(int hour, int min, float result_angle)
 
 void ask_exit()
 {
-    while(1){
+    while (1)
+    {
         char ans;
-        printf("Exit?(y/n)\n");
-        scanf("%c", &ans);
-        if(ans =='Y' || ans=='y') exit(1);
-        else if(ans == 'N'|| ans == 'n') break;
+        printf("Exit?(y/n) : ");
+        scanf(" %c", &ans);
+        if (ans == 'Y' || ans =='Y') exit(1);
+        else if (ans =='N' || ans == 'n') break;
         else printf("Wrong input\n");
     }
 }
