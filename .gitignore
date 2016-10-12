@@ -2,6 +2,8 @@
 .idea
 *.xocdeproj
 *.xcodeproj/
+*.xcworkspace
+*.xcworkspace/
 *.out
 *.zip
 .DS_Store
