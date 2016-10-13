@@ -14,24 +14,16 @@
 #include <math.h>
 
 int floor_log2(unsigned long N);
-int binary_search_log(double log2N);
 
 int floor_log2(unsigned long N)
 {
-    double log2N = log2(N);
+    if (N==0) return -1;
     
-    return binary_search_log(log2N);
+    unsigned long pow_set[64];
+    for(int i = 0; i<64; (pow_set[i-1] = pow(2,i++)));
     
+    return binary_search_unsigend_long(pow_set, N, 64);
 }
-
-int binary_search_log(double log2N)
-{
-    int array[64];
-    for(int i = 0; i<64; (array[i-1] = i++));
-    
-    return binary_search_int(array, log2N, 64);
-}
-
 
 
 #endif /* Floor_h */
