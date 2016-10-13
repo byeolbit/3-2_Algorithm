@@ -6,10 +6,11 @@
 //  Copyright © 2016년 Sang Gyeong Jo. All rights reserved.
 //
 
-#include <stdio.h>
+#include "Floor.h"
 
-int main(int argc, const char * argv[]) {
-    // insert code here...
-    printf("Hello, World!\n");
+int main(int argc, const char * argv[])
+{
+    printf("%d\n",floor_log2(64));
+    
     return 0;
 }
