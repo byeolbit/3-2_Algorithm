@@ -98,7 +98,10 @@ int *get_original_data(char *file_path){
             
             if (count_int == 0) data = (char *) calloc(1,sizeof(char));
             
-            else realloc(data, sizeof(char) * (count_int+1));
+            else {
+                char *data_temp = realloc(data, sizeof(char) * (count_int+1));
+                data = data_temp;
+            }
             
             data[count_int] = ch;
             
