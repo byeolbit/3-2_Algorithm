@@ -27,14 +27,34 @@
             mid = low + (high-low) / 2; \
             if (array[mid] > target) high = mid -1; \
             else if (array[mid] < target) low = mid +1; \
-            else break; \
+            else return mid; \
         } \
-        return mid; \
+        return low-1; \
+    } \
+
+
+#define UBS(type) \
+    int binary_search_unsigend_##type(unsigned type *array, unsigned type target, size_t size) \
+    { \
+        int low, high, mid; \
+        low = 0; \
+        mid = 0; \
+        high = size-1; \
+        while(low <= high) \
+        { \
+            mid = low + (high-low) / 2; \
+            if (array[mid] > target) high = mid -1; \
+            else if (array[mid] < target) low = mid +1; \
+            else return mid; \
+        } \
+        return low-1; \
     } \
 
 BS(int)
 BS(long)
 BS(double)
+UBS(int)
+UBS(long)
 
 /**********************************************
  *
