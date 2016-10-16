@@ -134,14 +134,14 @@ large_int li_plus ( large_int ln_a, large_int ln_b )
         ttl_sz = ( int ) ln_a.size;
         lss_sz = ( int ) ln_b.size;
         li_result.size = ln_a.size;
-        li_result.num = ( char* )malloc( li_result.size );
+        li_result.num = calloc(li_result.size, sizeof(char*));
     } else
     {
         chk = 1;
         ttl_sz = ( int ) ln_b.size;
         lss_sz = ( int ) ln_a.size;
         li_result.size = ln_b.size;
-        li_result.num = ( char* )malloc( li_result.size );
+        li_result.num = calloc(li_result.size, sizeof(char*));
     }
     
     int i = 0;
@@ -191,6 +191,67 @@ large_int li_plus ( large_int ln_a, large_int ln_b )
 large_int li_minus ( large_int ln_a, large_int ln_b )
 {
     large_int li_result;
+    li_result.num = NULL;
+    int lss_sz;
+    int ttl_sz;
+    if ( ln_a.size >= ln_b.size )
+    {
+        if ( li_comp( ln_a, ln_b ) == 0 ) return new_li( "0" );
+        else if ( li_comp( ln_a, ln_b ) == -1 ) return new_li(NULL);
+        
+        ttl_sz = ( int ) ln_a.size;
+        lss_sz = ( int ) ln_b.size;
+        li_result.size = ln_a.size;
+        li_result.num = calloc(li_result.size, sizeof(char*));
+
+    } else return new_li(NULL);
+    
+    int i = 0;
+    int carry = 0;
+    while( i < lss_sz )
+    {
+        int result = ( ln_a.num[ttl_sz-1-i] - '0' + carry)  - ( ln_b.num[lss_sz-1-i] - '0' );
+        
+        if ( result < 0 )
+        {
+            result = 10 + result;
+            carry = -1;
+        }
+        else carry = 0;
+        
+        char result_c = '0' + result;
+        
+        li_result.num[li_result.size-1-i] = result_c;
+        i++;
+    }
+    
+    while( i < ttl_sz )
+    {
+        int result = ( ln_a.num[ttl_sz-1-i] - '0' ) + carry;
+        
+        if ( result < 0 )
+        {
+            result = 10 + result;
+            carry = -1;
+        } else
+        {
+            carry = 0;
+        }
+        
+        char result_c = '0' + result;
+        
+        li_result.num[li_result.size-1-i] = result_c;
+        i++;
+    }
+    
+    if ( li_result.num[0] == '0' )
+    {
+        li_result.size -= 1;
+        char *tmp = (char*)malloc(li_result.size);
+        memmove(tmp, li_result.num+1, li_result.size);
+        free(li_result.num);
+        li_result.num = tmp;
+    }
     
     return li_result;
 }
