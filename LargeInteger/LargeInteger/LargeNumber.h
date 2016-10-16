@@ -23,6 +23,8 @@ large_int new_li ( const char *num );
 large_int cast_from ( unsigned long long num );
 large_int get_li ();
 
+void chk_vld ( large_int li );
+
 large_int li_op ( large_int ln_a, large_int ln_b, char op );
 large_int li_plus ( large_int ln_a, large_int ln_b );
 large_int li_minus ( large_int ln_a, large_int ln_b );
@@ -30,6 +32,19 @@ large_int li_mul ( large_int ln_a, large_int ln_b );
 large_int li_div ( large_int ln_a, large_int ln_b );
 
 int li_comp( large_int ln_a, large_int ln_b );
+
+void chk_vld ( large_int li )
+{
+    for ( int i = 0 ; i < li.size - 1 ; i++ )
+    {
+        int test = li.num[i] - '0';
+        if ( test < 0 || test > 9 )
+        {
+            printf("There is none number\n");
+            exit(1);
+        }
+    }
+}
 
 large_int new_li ( const char *num )
 {
@@ -44,6 +59,7 @@ large_int new_li ( const char *num )
         new_li.size = strlen(num);
         new_li.num = (char*)malloc(new_li.size);
         new_li.num = strcpy(new_li.num, num);
+        chk_vld(new_li);
     }
     
     return new_li;
@@ -57,6 +73,8 @@ large_int get_li ()
     
     printf("input number\n");
     while(getline(&new_li.num,&new_li.size, stdin) == -1) printf("No input\n");
+    
+    chk_vld(new_li);
     
     return new_li;
 }
@@ -130,27 +148,32 @@ large_int li_plus ( large_int ln_a, large_int ln_b )
     int carry = 0;
     while( i < lss_sz )
     {
-        int result = ( int )( ln_a.num[lss_sz-i]-'0' ) + ( int )( ln_b.num[lss_sz-i]-'0' ) + carry;
+        int result = 0;
+        
+        if ( chk ) result = ( ln_a.num[lss_sz-1-i] - '0' ) + ( ln_b.num[ttl_sz-1-i] - '0' ) + carry;
+        else result = ( int )( ln_a.num[ttl_sz-1-i] - '0' ) + ( int )( ln_b.num[lss_sz-1-i] - '0' ) + carry;
         
         carry = result/10;
         result = result%10;
         char result_c = '0' + result;
         
-        li_result.num[li_result.size-i] = result_c;
+        li_result.num[li_result.size-1-i] = result_c;
+        i++;
     }
     
     while( i < ttl_sz)
     {
         int result = 0;
         
-        if ( chk ) result = ( int )( ln_b.num[ttl_sz-i] - '0' ) + carry;
-        else result = ( int )( ln_a.num[ttl_sz-i] - '0' ) + carry;
+        if ( chk ) result = ( int )( ln_b.num[ttl_sz-1-i] - '0' ) + carry;
+        else result = ( int )( ln_a.num[ttl_sz-1-i] - '0' ) + carry;
         
         carry = result/10;
         result = result%10;
         char result_c = '0' + result;
         
-        li_result.num[li_result.size-i] = result_c;
+        li_result.num[li_result.size-1-i] = result_c;
+        i++;
     }
     
     if ( carry )
