@@ -25,11 +25,12 @@ large_int get_li ();
 
 void chk_vld ( large_int li );
 
-large_int li_op ( large_int ln_a, large_int ln_b, char op );
-large_int li_plus ( large_int ln_a, large_int ln_b );
-large_int li_minus ( large_int ln_a, large_int ln_b );
-large_int li_mul ( large_int ln_a, large_int ln_b );
-large_int li_div ( large_int ln_a, large_int ln_b );
+large_int li_op ( large_int li_a, large_int li_b, char op );
+large_int li_plus ( large_int li_a, large_int li_b );
+large_int li_minus ( large_int li_a, large_int li_b );
+large_int li_mul ( large_int li_a, large_int li_b );
+large_int li_div ( large_int li_a, large_int li_b );
+large_int li_pow ( large_int li_a, unsigned int n );
 
 int li_comp( large_int ln_a, large_int ln_b );
 
@@ -256,41 +257,68 @@ large_int li_minus ( large_int ln_a, large_int ln_b )
     return li_result;
 }
 
-large_int li_mul ( large_int ln_a, large_int ln_b )
+large_int li_mul ( large_int li_a, large_int li_b )
+{
+    large_int li_result = new_li ( "0" );
+    
+    int b_len = ( int ) li_b.size - 1;
+    
+    for ( int i = 0 ; i < li_b.size ; i++ )
+    {
+        large_int li_tmp = li_a;
+        
+        for ( int j = 0 ; j < li_b.num[b_len-i] - '0' - 1 ; j++ ) li_tmp = li_plus ( li_tmp, li_a );
+        
+        if ( i )
+        {
+            li_tmp.size += i;
+            li_tmp.num = realloc( li_tmp.num, ( li_tmp.size ) * sizeof ( large_int ) );
+            for (int k = 0 ; k < i ; k++ ) li_tmp.num[li_tmp.size-1-k] = '0';
+        }
+        
+        li_result = li_plus ( li_result, li_tmp );
+        
+    }
+    return li_result;
+}
+
+large_int li_div ( large_int li_a, large_int li_b )
 {
     large_int li_result;
     
     return li_result;
 }
 
-large_int li_div ( large_int ln_a, large_int ln_b )
+large_int li_pow ( large_int li_a, unsigned int n )
 {
-    large_int li_result;
+    large_int li_result = new_li("1");
+    
+    for ( int i = 0 ; i < n ; i++ ) li_result = li_mul( li_result, li_a );
     
     return li_result;
 }
 
 
-large_int li_op ( large_int ln_a, large_int ln_b, char op )
+large_int li_op ( large_int li_a, large_int li_b, char op )
 {
     large_int result;
     
     switch( op )
     {
         case '+' :
-            result = li_plus(ln_a, ln_b);
+            result = li_plus(li_a, li_b);
             break;
             
         case '-' :
-            result = li_minus(ln_a, ln_b);
+            result = li_minus(li_a, li_b);
             break;
             
         case '*' :
-            result = li_mul(ln_a, ln_b);
+            result = li_mul(li_a, li_b);
             break;
             
         case '/' :
-            result = li_div(ln_a, ln_b);
+            result = li_div(li_a, li_b);
             break;
             
         default :   //error
