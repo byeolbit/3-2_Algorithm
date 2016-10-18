@@ -13,7 +13,7 @@
 
 large_int fibo_rec ( large_int n , large_int li_1, large_int li_2);
 large_int fibo_array ( int n );
-large_int *fibo_rec_sqr ( large_int n );
+large_int fibo_rec_sqr ( int n );
 
 large_int fibo_rec ( large_int n , large_int li_1, large_int li_2)
 {
@@ -48,11 +48,43 @@ large_int fibo_array ( int n )
     return result;
 }
 
-large_int *fibo_req_sqr ( large_int n )
+large_int **fib_mul ( large_int **mat_a, large_int **mat_b )
 {
-    return 0;
+    large_int **result = calloc(2,sizeof(large_int*));
+    result[0] = calloc(2,sizeof(large_int));
+    result[1] = calloc(2,sizeof(large_int));
+    
+    for ( int i = 0 ; i < 2; i++ )
+    {
+        for ( int j = 0 ; j < 2 ; j ++ )
+            result[i][j] = li_plus( li_mul( mat_a[i][0], mat_b[0][j] ), li_mul( mat_a[i][1], mat_a[1][j] ) );
+    }
+    
+    return result;
 }
 
+large_int fib_pow ( large_int **mat, large_int n )
+{
+    if ( li_comp( n, cast_from( 1 ) ) == 0 )
+    {
+        fib_pow( mat, n );
+    }
+}
 
+large_int fibo_req_sqr ( large_int n )
+{
+    large_int **mat = calloc(2,sizeof(large_int*));
+    mat[0] = calloc(2,sizeof(large_int));
+    mat[1] = calloc(2,sizeof(large_int));
+    
+    mat[0][0] = cast_from(1);
+    mat[0][1] = cast_from(1);
+    mat[1][0] = cast_from(1);
+    mat[1][1] = cast_from(0);
+    
+    if ( li_comp(n, cast_from(2)) == -1 )
+        return n;
+    return fib_pow( mat, n );
+}
 
 #endif /* Fibonacci_h */
