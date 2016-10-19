@@ -266,7 +266,7 @@ large_int li_minus ( large_int ln_a, large_int ln_b )
 
 large_int li_mul ( large_int li_a, large_int li_b )
 {
-    if ( !strcmp(li_a.num, "0") || !strcmp(li_b.num, "0") )
+    if( !strcmp( li_a.num, "0" ) || !strcmp(li_b.num, "0") )
         return cast_from(0);
     
     large_int li_result = new_li ( "0" );
@@ -294,8 +294,30 @@ large_int li_mul ( large_int li_a, large_int li_b )
 
 large_int li_div ( large_int li_a, large_int li_b )
 {
-    large_int li_result;
+    switch ( li_comp( li_a, li_b ) ){
+        case 0:
+            return cast_from(1);
+            break;
+            
+        case -1:
+            return cast_from(0);
+            break;
+            
+        default:
+            break;
+    }
     
+    large_int li_tmp = li_a;
+    large_int li_result = cast_from(0);
+    
+    LI_ONE
+    
+    while ( li_comp( li_tmp, li_b ) >= 0 )
+    {
+        li_tmp = li_minus(li_tmp, li_b);
+        li_result = li_plus(li_result, li_one);
+    }
+    free(li_one.num);
     return li_result;
 }
 
