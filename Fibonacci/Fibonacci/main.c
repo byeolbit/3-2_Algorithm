@@ -16,7 +16,7 @@ int main(int argc, const char * argv[]) {
     //large_int li_2 = new_li("2");
 
     //printf("%s\n", fibo_array(900000).num);
-    printf("%s\n", fib_rec_sqr(cast_from(1)).num);
+    printf("%s\n", fib_rec_sqr(cast_from(10)).num);
     //printf("%llu\n",fib(50));
     
     //free(li_1.num);
