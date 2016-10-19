@@ -28,14 +28,13 @@ large_int fibo_array ( int n )
     
     large_int *fib_arr = calloc(n, sizeof(large_int) );
     
-    //large_int fib_arr[82];
-    
     int i = 0;
     fib_arr[i] = new_li("0");
     fib_arr[++i] = new_li("1");
     i++;
     
-    while ( i <= n ){
+    while ( i <= n )
+    {
         fib_arr[i] = li_plus(fib_arr[i-2], fib_arr[i-1]);
         i++;
     }
@@ -43,7 +42,7 @@ large_int fibo_array ( int n )
     large_int result = fib_arr[n];
     
     for ( i = 0 ; i <= n ; i++ )
-        free(fib_arr[i].num);
+        free( fib_arr[i].num );
     
     return result;
 }
@@ -56,13 +55,20 @@ large_int **fib_mul ( large_int **mat_a, large_int **mat_b )
     
     for ( int i = 0 ; i < 2; i++ )
     {
-        for ( int j = 0 ; j < 2 ; j ++ ){
-            result[i][j] = li_plus( li_mul( mat_a[i][0], mat_b[0][j] ), li_mul( mat_a[i][1], mat_a[1][j] ) );
-            //printf("a[%d][0] * b[0][%d] + a[%d][1] * b[1][%d]\n",i,j,i,j);
-            //printf("%s*%s + %s*%s = %s\n", mat_a[i][0].num, mat_b[0][j].num,  mat_a[i][1].num, mat_a[1][j].num, result[i][j].num );
+        for ( int j = 0 ; j < 2 ; j ++ )
+        {
+            for ( int k = 0 ; k < 2 ; k ++ )
+            {
+                result[i][j] = li_plus( li_mul( mat_a[i][k], mat_b[k][j] ), result[i][j]);
+            }
         }
     }
     return result;
+}
+
+large_int fib_pow ( large_int **mat_a, large_int n )
+{
+    
 }
 
 large_int fib_rec_sqr ( large_int n )
@@ -88,26 +94,41 @@ large_int fib_rec_sqr ( large_int n )
     ret_mat[1][0] = cast_from(0);
     ret_mat[1][1] = cast_from(1);
     
-    if ( li_comp ( n, li_two ) < 0 )
-        return n;
     
-    while ( li_comp(n, li_zero) > 0 )
+    LI_ONE
+    if ( li_comp( n, li_zero ) > 0 )
     {
+        printf("n is : %s\n", n.num);
         if( li_is_odd( n ) )
         {
             ret_mat = fib_mul(ret_mat, fib_mat);
-            printf("odd! ");
+            printf("odd! \n");
         }
+        
+        printf("ret_mat\n[%s][%s]\n[%s][%s]\n\n",ret_mat[0][0].num,ret_mat[0][1].num,ret_mat[1][0].num,ret_mat[1][1].num);
         
         fib_mat = fib_mul(fib_mat, fib_mat);
         
-        printf("n: %s\n",n.num);
+        printf("fib_mat\n[%s][%s]\n[%s][%s]\n\n",fib_mat[0][0].num,fib_mat[0][1].num,fib_mat[1][0].num,fib_mat[1][1].num);
         
         n = li_div(n, li_two);
     }
+    
+    large_int result = new_li( ret_mat[0][1].num );
+    
     free(li_zero.num);
     free(li_two.num);
-    return ret_mat[0][1];
+    
+    for ( int i = 0 ; i < 2; i++ )
+    {
+        for ( int j = 0 ; j < 2 ; j ++ )
+        {
+            free(ret_mat[i][j].num);
+            free(fib_mat[i][j].num);
+        }
+    }
+    
+    return result;
 }
 
 #endif /* Fibonacci_h */
