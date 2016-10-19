@@ -13,7 +13,7 @@
 
 large_int fibo_rec ( large_int n , large_int li_1, large_int li_2);
 large_int fibo_array ( int n );
-large_int fibo_rec_sqr ( int n );
+large_int fib_rec_sqr ( large_int n );
 
 large_int fibo_rec ( large_int n , large_int li_1, large_int li_2)
 {
@@ -56,35 +56,58 @@ large_int **fib_mul ( large_int **mat_a, large_int **mat_b )
     
     for ( int i = 0 ; i < 2; i++ )
     {
-        for ( int j = 0 ; j < 2 ; j ++ )
+        for ( int j = 0 ; j < 2 ; j ++ ){
             result[i][j] = li_plus( li_mul( mat_a[i][0], mat_b[0][j] ), li_mul( mat_a[i][1], mat_a[1][j] ) );
+            printf("a[%d][0] * b[0][%d] + a[%d][1] * b[1][%d]\n",i,j,i,j);
+            printf("%s*%s + %s*%s = %s\n", mat_a[i][0].num, mat_b[0][j].num,  mat_a[i][1].num, mat_a[1][j].num, result[i][j].num );
+        }
     }
-    
     return result;
 }
 
-large_int fib_pow ( large_int **mat, large_int n )
+large_int fib_rec_sqr ( large_int n )
 {
-    if ( li_comp( n, cast_from( 1 ) ) == 0 )
+    
+    large_int i = cast_from(1);
+    large_int li_one = cast_from(1);
+    large_int li_two = cast_from(2);
+    
+    large_int **fib_mat = calloc(2,sizeof(large_int*));
+    fib_mat[0] = calloc(2,sizeof(large_int));
+    fib_mat[1] = calloc(2,sizeof(large_int));
+    
+    fib_mat[0][0] = cast_from(1);
+    fib_mat[0][1] = cast_from(1);
+    fib_mat[1][0] = cast_from(1);
+    fib_mat[1][1] = cast_from(0);
+    
+    large_int **ret_mat = calloc(2,sizeof(large_int*));
+    ret_mat[0] = calloc(2,sizeof(large_int));
+    ret_mat[1] = calloc(2,sizeof(large_int));
+    
+    ret_mat[0][0] = cast_from(1);
+    ret_mat[0][1] = cast_from(0);
+    ret_mat[1][0] = cast_from(0);
+    ret_mat[1][1] = cast_from(1);
+    
+    if ( !li_comp( n, cast_from( 0 ) ) )
+        return ret_mat[0][1];
+    
+    while ( li_comp(i, n) < 1 )
     {
-        fib_pow( mat, n );
+        if( li_is_odd( i ) )
+            ret_mat = fib_mul(ret_mat, fib_mat);
+        
+        fib_mat = fib_mul(fib_mat, fib_mat);
+        
+        //i = li_plus(i, li_one);
+        i = li_mul(i, li_two);
+        
+        printf("[%s][%s]\n[%s][%s]\n",ret_mat[0][0].num,ret_mat[0][1].num,ret_mat[1][0].num,ret_mat[1][1].num );
+        printf("[%s][%s]\n[%s][%s]\n\n",fib_mat[0][0].num,fib_mat[0][1].num,fib_mat[1][0].num,fib_mat[1][1].num );
     }
-}
-
-large_int fibo_req_sqr ( large_int n )
-{
-    large_int **mat = calloc(2,sizeof(large_int*));
-    mat[0] = calloc(2,sizeof(large_int));
-    mat[1] = calloc(2,sizeof(large_int));
     
-    mat[0][0] = cast_from(1);
-    mat[0][1] = cast_from(1);
-    mat[1][0] = cast_from(1);
-    mat[1][1] = cast_from(0);
-    
-    if ( li_comp(n, cast_from(2)) == -1 )
-        return n;
-    return fib_pow( mat, n );
+    return ret_mat[0][1];
 }
 
 #endif /* Fibonacci_h */
