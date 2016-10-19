@@ -19,11 +19,16 @@
 typedef struct large_int_num large_int;
 
 struct large_int_num { size_t size; char *num; };
+
 large_int new_li ( const char *num );
 large_int cast_from ( unsigned long long num );
 large_int get_li ();
 
 void chk_vld ( large_int li );
+
+#define LI_ZERO large_int li_zero = cast_from(0);
+#define LI_ONE large_int li_one = cast_from(1);
+#define LI_TWO large_int li_two = cast_from(2);
 
 large_int li_op ( large_int li_a, large_int li_b, char op );
 large_int li_plus ( large_int li_a, large_int li_b );
@@ -31,6 +36,8 @@ large_int li_minus ( large_int li_a, large_int li_b );
 large_int li_mul ( large_int li_a, large_int li_b );
 large_int li_div ( large_int li_a, large_int li_b );
 large_int li_pow ( large_int li_a, unsigned int n );
+
+int li_is_odd ( large_int li );
 
 int li_comp( large_int ln_a, large_int ln_b );
 
@@ -327,6 +334,12 @@ large_int li_op ( large_int li_a, large_int li_b, char op )
     }
     
     return result;
+}
+
+int li_is_odd ( large_int li )  //return 1 is odd, 0 is even
+{
+    return ( li.num[li.size-1] - '0' ) % 2;
+    
 }
 
 #endif /* LargeNumber_h */
