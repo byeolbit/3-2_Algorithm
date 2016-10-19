@@ -198,8 +198,7 @@ large_int li_plus ( large_int ln_a, large_int ln_b )
 
 large_int li_minus ( large_int ln_a, large_int ln_b )
 {
-    large_int li_result;
-    li_result.num = NULL;
+    large_int li_result = new_li(NULL);
     int lss_sz;
     int ttl_sz;
     if ( ln_a.size >= ln_b.size )
@@ -211,8 +210,8 @@ large_int li_minus ( large_int ln_a, large_int ln_b )
         lss_sz = ( int ) ln_b.size;
         li_result.size = ln_a.size;
         li_result.num = calloc(li_result.size, sizeof(char*));
-
-    } else return new_li(NULL);
+        
+    } else return li_result;
     
     int i = 0;
     int carry = 0;
@@ -266,29 +265,54 @@ large_int li_minus ( large_int ln_a, large_int ln_b )
 
 large_int li_mul ( large_int li_a, large_int li_b )
 {
+    LI_ZERO
+    
     if( !strcmp( li_a.num, "0" ) || !strcmp(li_b.num, "0") )
         return cast_from(0);
     
+    else if ( !strcmp( li_a.num, "1" ) )
+        return li_b;
+    
+    else if ( !strcmp( li_b.num, "1" ) )
+        return li_a;
+    
     large_int li_result = new_li ( "0" );
+    large_int li_big;
+    large_int li_less;
     
-    int b_len = ( int ) li_b.size - 1;
-    
-    for ( int i = 0 ; i < li_b.size ; i++ )
+    //Select bigger number
+    if ( li_comp(li_a, li_b) > 0 )
     {
-        large_int li_tmp = li_a;
+        li_big = new_li( li_a.num );
+        li_less = new_li( li_b.num );
+    } else
+    {
+        li_big = new_li( li_b.num );
+        li_less = new_li( li_a.num );
+    }
+    
+    for ( int i = 0 ; i < li_less.size ; i++ )
+    {
+        large_int li_res_tmp = new_li( li_zero.num );
         
-        for ( int j = 0 ; j < li_b.num[b_len-i] - '0' - 1 ; j++ ) li_tmp = li_plus ( li_tmp, li_a );
+        for ( int j = 0 ; j < ( li_less.num[li_less.size-1]-'0' ) ; j++ )
+            li_res_tmp = li_plus( li_res_tmp, li_big );
         
         if ( i )
         {
-            li_tmp.size += i;
-            li_tmp.num = realloc( li_tmp.num, ( li_tmp.size ) * sizeof ( large_int ) );
-            for (int k = 0 ; k < i ; k++ ) li_tmp.num[li_tmp.size-1-k] = '0';
+            li_res_tmp.size += i;
+            char *tmp = calloc(li_res_tmp.size, sizeof(char*));
+            memmove(tmp, li_res_tmp.num, li_res_tmp.size-i);
+            li_res_tmp.num = tmp;
+            for ( int k = 0 ; k < i ; k++ ) li_res_tmp.num[li_res_tmp.size-1-k] = '0';
         }
         
-        li_result = li_plus ( li_result, li_tmp );
-        
+        large_int res_tmp = li_result;
+        li_result = li_plus ( li_result, li_res_tmp );
+        free( res_tmp.num );
+        free( li_res_tmp.num );
     }
+    
     return li_result;
 }
 
@@ -302,7 +326,7 @@ large_int li_div ( large_int li_a, large_int li_b )
         case -1:
             return cast_from(0);
             break;
-        
+            
         default:
             break;
     }
