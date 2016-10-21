@@ -58,13 +58,15 @@ void test_li_minus ()
 
 void test_li_mul ()
 {
-    large_int li_test_a = new_li("99999999999999999999");
-    large_int li_test_b = new_li("99999999999999999999");
+    large_int li_test_a = new_li("1");
+    large_int li_test_b = new_li("610");
+    for ( int i = 0; i < 100 ; i++ )
+    {
     large_int result = li_mul(li_test_a, li_test_b);
     printf("size_a = %lu, size_b = %lu, result = %lu, %s\n",li_test_a.size,li_test_b.size, result.size, result.num);
+    }
     free(li_test_a.num);
     free(li_test_b.num);
-    free(result.num);
 }
 
 void test_li_pow ()
