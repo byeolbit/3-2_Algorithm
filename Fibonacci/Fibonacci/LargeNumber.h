@@ -65,8 +65,8 @@ large_int new_li ( const char *num )
     } else
     {
         new_li.size = strlen(num);
-        new_li.num = (char*)malloc(new_li.size);
-        new_li.num = strcpy(new_li.num, num);
+        new_li.num = calloc(new_li.size, sizeof(char*));
+        memmove(new_li.num, num, new_li.size*sizeof(char*));
         chk_vld(new_li);
     }
     
@@ -187,9 +187,10 @@ large_int li_plus ( large_int ln_a, large_int ln_b )
     if ( carry )
     {
         char result_c = '0' + carry;
-        char *tmp = realloc(li_result.num, li_result.size++);
-        memmove(tmp+1, tmp, li_result.size-1);
+        char *tmp = calloc(li_result.size++, sizeof(char*));
+        memmove(tmp+1, li_result.num, (li_result.size-1)*sizeof(char));
         tmp[0] = result_c;
+        free(li_result.num);
         li_result.num = tmp;
     }
     
@@ -254,8 +255,8 @@ large_int li_minus ( large_int ln_a, large_int ln_b )
     if ( li_result.num[0] == '0' )
     {
         li_result.size -= 1;
-        char *tmp = (char*)malloc(li_result.size);
-        memmove(tmp, li_result.num+1, li_result.size);
+        char *tmp = calloc(li_result.size,sizeof(char*));
+        memmove(tmp, li_result.num+1, li_result.size * sizeof(char*));
         free(li_result.num);
         li_result.num = tmp;
     }
@@ -266,7 +267,7 @@ large_int li_minus ( large_int ln_a, large_int ln_b )
 large_int li_mul ( large_int li_a, large_int li_b )
 {
     LI_ZERO
-    
+
     if( !strcmp( li_a.num, "0" ) || !strcmp(li_b.num, "0") )
         return cast_from(0);
     
@@ -283,49 +284,43 @@ large_int li_mul ( large_int li_a, large_int li_b )
     //Select bigger number
     if ( li_comp(li_a, li_b) > 0 )
     {
-        li_big = new_li( li_a.num );
-        li_less = new_li( li_b.num );
+        li_big = li_a;
+        li_less = li_b;
     } else
     {
-        li_big = new_li( li_b.num );
-        li_less = new_li( li_a.num );
+        li_big = li_b;
+        li_less = li_a;
     }
     
-    // in a x b, add a for b times
-    // Example
-    //                 abcdef
-    //               x hijklm
-    //              ---------
-    //             abcdef x m
-    //        abcdef x l * 10
-    //        abcdef x k * 10
-    //       abcdef x j * 100
-    //      abcdef x i * 1000
-    //  +  abcdef x h * 10000
-    //  ---------------------
-    
+    //Add bigger number less number times.
     for ( int i = 0 ; i < li_less.size ; i++ )
     {
-        large_int li_res_tmp = new_li( li_zero.num );
+        large_int li_res_tmp = new_li( li_zero.num ); //Save sum result temporary
         
-        for ( int j = 0 ; j < ( li_less.num[li_less.size-1] - '0' ) ; j++ )
+        for ( int j = 0 ; j < ( li_less.num[li_less.size-i-1] - '0' ) ; j++ )
             li_res_tmp = li_plus( li_res_tmp, li_big );
         
-        if ( i )
+        
+        if ( i )    //shift left 10*i
         {
             li_res_tmp.size += i;
             char *tmp = calloc(li_res_tmp.size, sizeof(char*));
-            memmove(tmp, li_res_tmp.num, li_res_tmp.size-i);
+            memmove(tmp, li_res_tmp.num, (li_res_tmp.size-i) * sizeof(char));
+            free(li_res_tmp.num);
             li_res_tmp.num = tmp;
             for ( int k = 0 ; k < i ; k++ ) li_res_tmp.num[li_res_tmp.size-1-k] = '0';
         }
         
         large_int res_tmp = li_result;
         li_result = li_plus ( li_result, li_res_tmp );
+
         free( res_tmp.num );
         free( li_res_tmp.num );
     }
     free(li_zero.num);
+    //free(li_big.num);
+    //free(li_less.num);
+    
     return li_result;
 }
 
