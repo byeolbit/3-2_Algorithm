@@ -154,6 +154,7 @@ skyline_s *merge_skyline( skyline_s *sky1, skyline_s *sky2 )
     int currentH2 = 0;
     int maxH = 0;
     int currentX = 0;
+    int currentX2 = 0;
     
     while ( (sky1->size > 0) && (sky2->size > 0) )
     {
@@ -166,21 +167,46 @@ skyline_s *merge_skyline( skyline_s *sky1, skyline_s *sky2 )
             if ( currentH2 > maxH )
             {
                 maxH = currentH2;
+                append_skyline(new_S, currentX, maxH);
+                remove_skyline(sky1, 0);
+            } else if ( currentH2 == maxH )
+            {
+                if ( currentX >= currentX2 )
+                {
+                    remove_skyline(sky1, 0);
+                }
+            } else
+            {
+                append_skyline(new_S, currentX, maxH);
+                remove_skyline(sky1, 0);
             }
-            append_skyline(new_S, currentX, maxH);
-            remove_skyline(sky1, 0);
+            
+            currentX2 = currentX;
+            
         } else
         {
             currentX = sky2->_skyline[0].start;
-            currentH2 = sky2->_skyline[0].height;
+            currentH1 = sky2->_skyline[0].height;
             maxH = currentH1;
             
             if ( currentH2 > maxH )
             {
                 maxH = currentH2;
+                append_skyline(new_S, currentX, maxH);
+                remove_skyline(sky2, 0);
+            } else if ( currentH2 == maxH )
+            {
+                if ( currentX >= currentX2 )
+                {
+                    remove_skyline(sky2, 0);
+                }
+            } else
+            {
+                append_skyline(new_S, currentX, maxH);
+                remove_skyline(sky2, 0);
             }
-            append_skyline(new_S, currentX, maxH);
-            remove_skyline(sky2, 0);
+            
+            currentX2 = currentX;
 
         }
     }
@@ -193,10 +219,14 @@ skyline_s *merge_skyline( skyline_s *sky1, skyline_s *sky2 )
         remove_skyline(sky2, 0);
     }
     
+    //free(sky1->_skyline);
+    //free(sky2->_skyline);
+    /*
+    printf("result\n");
     for ( int i = 0 ; i < new_S->size ; i++ )
         printf("(%d,%d)",new_S->_skyline[i].start, new_S->_skyline[i].height);
     printf("\n");
-    
+    */
     return new_S;
 }
 
