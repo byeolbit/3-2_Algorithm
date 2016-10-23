@@ -27,4 +27,5 @@ void run_test ()
         printf("%d,%d",new_S->_skyline[i].start,new_S->_skyline[i].height);
         if ( i+1 < new_S->size ) printf(",");
     }
+    printf("\n");
 }
