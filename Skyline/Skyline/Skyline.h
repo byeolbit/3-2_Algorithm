@@ -153,15 +153,20 @@ skyline_s *merge_skyline( skyline_s *sky1, skyline_s *sky2 )
     int currentH1 = 0;
     int currentH2 = 0;
     int maxH = 0;
+    int maxH2 = 0;
     int currentX = 0;
-    int currentX2 = 0;
+    int maxX = 0;
     
     while ( (sky1->size > 0) && (sky2->size > 0) )
     {
+        
         if ( sky1->_skyline[0].start < sky2->_skyline[0].start )
         {
             currentX = sky1->_skyline[0].start;
             currentH1 = sky1->_skyline[0].height;
+            
+            if (currentX == 5)
+                currentX = currentX;
             
             if ( currentH1 > currentH2 )
             {
@@ -170,21 +175,59 @@ skyline_s *merge_skyline( skyline_s *sky1, skyline_s *sky2 )
             else
             {
                 if ( currentH1 < sky2->_skyline[0].height )
-                    currentH2 = currentH1;
+                {
+                     currentH2 = currentH1;
+                    if ( currentH1 < maxH2 )
+                    {
+                        currentH2 = maxH2;
+                        append_skyline(new_S, currentX, currentH2);
+                    }
+
+                }
+                else if ( currentH1 < maxH2 ) currentH2 = maxH2;
             }
             
             if ( maxH != currentH2)
                 append_skyline(new_S, currentX, currentH2);
-            remove_skyline(sky1, 0);
+            
+            
             
             maxH = currentH2;
+
+            if ( new_S->size == 1 )
+            {
+                maxX = sky1->_skyline[1].start;
+                maxH2 = currentH1;
+            }
             
-            currentH2 = currentH1;
+            else if ( sky1->size > 1)
+            {
+                if (maxX < sky1->_skyline[1].start)
+                {
+                    maxX = sky1->_skyline[1].start;
+                    maxH2 = currentH1;
+                }
+                else if (maxX == sky1->_skyline[1].start)
+                {
+                    if ( maxH2 < currentH1 )
+                    {
+                        maxX = sky1->_skyline[1].start;
+                        maxH2 = currentH1;
+                    }
+                }
+            }
+            
+            remove_skyline(sky1, 0);
+            //currentH2 = currentH1;
             
         } else
         {
             currentX = sky2->_skyline[0].start;
             currentH1 = sky2->_skyline[0].height;
+            
+            
+            if (currentX == 2)
+                currentX = currentX;
             
             if ( currentH1 > currentH2 )
             {
@@ -193,16 +236,46 @@ skyline_s *merge_skyline( skyline_s *sky1, skyline_s *sky2 )
             else
             {
                 if ( currentH1 < sky1->_skyline[0].height )
+                {
                     currentH2 = currentH1;
+                    if ( currentH1 < maxH2 )
+                    {
+                        currentH2 = maxH2;
+                        append_skyline(new_S, currentX, currentH2);
+                    }
+                }
+                else if ( currentH1 < maxH2 ) currentH2 = maxH2;
             }
             
             if ( maxH != currentH2)
                 append_skyline(new_S, currentX, currentH2);
-            remove_skyline(sky2, 0);
             
             maxH = currentH2;
+
+            if ( new_S->size == 1 )
+            {
+                maxX = sky2->_skyline[1].start;
+                maxH2 = currentH1;
+            }
+            else if ( sky2->size > 1)
+            {
+                if (maxX < sky2->_skyline[1].start)
+                {
+                    maxX = sky2->_skyline[1].start;
+                    maxH2 = currentH1;
+                }
+                else if (maxX == sky2->_skyline[1].start)
+                {
+                    if ( maxH2 < currentH1 )
+                    {
+                        maxX = sky2->_skyline[1].start;
+                        maxH2 = currentH1;
+                    }
+                }
+            }
+            remove_skyline(sky2, 0);
             
-            currentH2 = currentH1;
+            //currentH2 = currentH1;
             
         }
     }
