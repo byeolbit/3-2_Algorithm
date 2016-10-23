@@ -162,54 +162,51 @@ skyline_s *merge_skyline( skyline_s *sky1, skyline_s *sky2 )
         {
             currentX = sky1->_skyline[0].start;
             currentH1 = sky1->_skyline[0].height;
-            maxH = currentH1;
             
-            if ( currentH2 > maxH )
+            if ( currentH1 > currentH2 )
             {
-                maxH = currentH2;
-                append_skyline(new_S, currentX, maxH);
-                remove_skyline(sky1, 0);
-            } else if ( currentH2 == maxH )
+                currentH2 = currentH1;
+            }
+            else
             {
-                if ( currentX >= currentX2 )
-                {
-                    remove_skyline(sky1, 0);
-                }
-            } else
-            {
-                append_skyline(new_S, currentX, maxH);
-                remove_skyline(sky1, 0);
+                if ( currentH1 < sky2->_skyline[0].height )
+                    currentH2 = currentH1;
             }
             
-            currentX2 = currentX;
+            if ( maxH != currentH2)
+                append_skyline(new_S, currentX, currentH2);
+            remove_skyline(sky1, 0);
+            
+            maxH = currentH2;
+            
+            currentH2 = currentH1;
             
         } else
         {
             currentX = sky2->_skyline[0].start;
             currentH1 = sky2->_skyline[0].height;
-            maxH = currentH1;
             
-            if ( currentH2 > maxH )
+            if ( currentH1 > currentH2 )
             {
-                maxH = currentH2;
-                append_skyline(new_S, currentX, maxH);
-                remove_skyline(sky2, 0);
-            } else if ( currentH2 == maxH )
+                currentH2 = currentH1;
+            }
+            else
             {
-                if ( currentX >= currentX2 )
-                {
-                    remove_skyline(sky2, 0);
-                }
-            } else
-            {
-                append_skyline(new_S, currentX, maxH);
-                remove_skyline(sky2, 0);
+                if ( currentH1 < sky1->_skyline[0].height )
+                    currentH2 = currentH1;
             }
             
-            currentX2 = currentX;
-
+            if ( maxH != currentH2)
+                append_skyline(new_S, currentX, currentH2);
+            remove_skyline(sky2, 0);
+            
+            maxH = currentH2;
+            
+            currentH2 = currentH1;
+            
         }
     }
+    
     while (sky1->size > 0) {
         append_skyline(new_S, sky1->_skyline[0].start, sky1->_skyline[0].height);
         remove_skyline(sky1, 0);
@@ -219,14 +216,16 @@ skyline_s *merge_skyline( skyline_s *sky1, skyline_s *sky2 )
         remove_skyline(sky2, 0);
     }
     
-    //free(sky1->_skyline);
-    //free(sky2->_skyline);
-    /*
+    free(sky1->_skyline);
+    free(sky2->_skyline);
+    free(sky1);
+    free(sky2);
+    
     printf("result\n");
     for ( int i = 0 ; i < new_S->size ; i++ )
         printf("(%d,%d)",new_S->_skyline[i].start, new_S->_skyline[i].height);
     printf("\n");
-    */
+    
     return new_S;
 }
 

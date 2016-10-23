@@ -20,7 +20,7 @@ void run_test ()
     int n;
     scanf("%d", &n);
     building *new_B = build_buildings(n);
-    skyline_s *new_S = find_skyline(new_B, new_B[0].left, new_B[n-1].right);
+    skyline_s *new_S = find_skyline(new_B, 0, n-1);
     
     for ( int i = 0 ; i < new_S->size ; i++ )
     {
