@@ -11,7 +11,25 @@
 
 #include "Essential.h"
 #include "Quick.h"
+#include <math.h>
 #include <memory.h>
+
+struct point_pair
+{
+    point a;
+    point b;
+    double dist;
+};
+
+typedef struct point_pair pair;
+
+double get_dist( point a, point b)
+{
+    double x = a.x>b.x ? (a.x-b.x) : (b.x-a.x);
+    double y = a.y>b.y ? (a.y-b.y) : (b.y-a.y);
+    
+    return sqrt(pow(x,2)+pow(y,2));
+}
 
 point_s *new_point_set()
 {
@@ -28,16 +46,20 @@ point_s *build_data( FILE *fp )
 {
     point_s *new_data = new_point_set();
     
-    while(feof(fp))
+    while(!feof(fp))
     {
         new_data -> size++;
-        new_data -> data = realloc(new_data->data, new_data->size);
-        fscanf(fp, "%lf,%lf",&new_data->data[new_data->size-1].x, &new_data->data[new_data->size-1].y);
+        point *tmp = realloc(new_data->data, new_data->size*sizeof(point));
+        new_data -> data = tmp;
+        double x, y;
+        fscanf(fp, "%lf,%lf\n",&x, &y);
+        new_data->data[new_data->size-1].x = x;
+        new_data->data[new_data->size-1].y = y;
     }
     
     printf("read data : ");
     for ( int i = 0; i < new_data->size ; i++ )
-        printf("(x: %lf, y: %lf) ",new_data->data[i].x,new_data->data[i].y);
+        printf("(x:%0.1lf,y:%0.1lf) ",new_data->data[i].x,new_data->data[i].y);
     printf("\n");
     
     fclose(fp);
@@ -63,28 +85,118 @@ point_s *div_half(point_s *d_set)
     
     point *tmp = calloc(d_set->size,sizeof(int));
     memmove(tmp, d_set->data + new_d->size, d_set->size * sizeof(point));
-    free(d_set->data);
     d_set -> data = tmp;
+    
+    printf("half data a(size:%d):",new_d->size);
+    for( int i = 0 ; i < new_d -> size ; i++ )
+        printf("(%0.1lf,%0.1lf) ",new_d->data[i].x,new_d->data[i].y);
+    printf("\n");
+    
+    printf("half data b(size:%d):",d_set->size);
+    for( int i = 0 ; i < d_set-> size ; i++ )
+        printf("(%0.1lf,%0.1lf) ",d_set->data[i].x,d_set->data[i].y);
+    printf("\n");
+
     
     return new_d;
 }
 
-point closest_pair(point_s *d_set)
+pair min_pair(pair p1, pair p2)
 {
-    point result;
+    return p1.dist < p1.dist ? p1 : p2;
+}
+
+pair brute_force(point_s *d_set)
+{
+    pair result;
+    int i, j;
+    double d;
+    result.dist = get_dist(d_set->data[0], d_set->data[1]);
     
-    quick_sort(d_set->data, 0, d_set->size-1);
-    double half_line = compute_half(d_set);
-    
-    point_s *left_half = div_half(d_set);
-    point_s *right_half = d_set;
-    
-    point *r1 = closet_pair(left_half);
-    point *r2 = closet_pair(right_half);
-    
-    
+    for (i = 0 ; i < d_set->size ; i++) {
+        for (j = i + 1; j < d_set->size ; j++) {
+            d = get_dist(d_set->data[i], d_set->data[j]);
+            if (d < result.dist )
+            {
+                result.a = d_set->data[i];
+                result.b = d_set->data[j];
+                result.dist = d;
+            }
+        }
+    }
     
     return result;
+}
+
+void push_point( point_s *D, point p )
+{
+    D->size++;
+    point *tmp = realloc(D->data, D->size*sizeof(point));
+    tmp[D->size-1] = p;
+    D -> data = tmp;
+}
+
+point_s *del( double L, point_s *d_set, pair r)
+{
+    point_s *new_p = new_point_set();
+
+    for ( int i = 0 ; i < d_set->size; i++ )
+    {
+        if ( d_set->data[i].x < L )
+        {
+            if ( L - d_set->data[i].x < r.dist)
+                push_point(new_p, d_set->data[i]);
+        }
+        else
+        {
+            if ( d_set->data[i].x - L < r.dist)
+                push_point(new_p, d_set->data[i]);
+        }
+    }
+    
+    return new_p;
+}
+
+pair closest_pair(point_s *d_set)
+{
+    if ( d_set -> size < 4 )
+        return brute_force(d_set);
+    
+    double half_line = compute_half(d_set);
+    
+    point_s *right_half = new_point_set();
+    free(right_half->data);
+    right_half->size = d_set->size;
+    right_half->data = calloc(right_half->size,sizeof(point));
+    memmove(right_half->data, d_set->data, d_set->size*sizeof(point));
+    
+    point_s *left_half = div_half(right_half);
+    
+    pair r1 = closest_pair(left_half);
+    pair r2 = closest_pair(right_half);
+    pair r = min_pair(r1, r2);
+    
+    printf("min : %lf\n",r.dist);
+    
+    point_s *tmp = del(half_line, d_set, r);
+    free(d_set);
+    d_set = tmp;
+    
+    quick_sort_y(d_set->data, 0, d_set->size-1);
+    
+    for (int i = 0 ; i < d_set->size ; i++) {
+        for (int j = i + 1; j < d_set->size ; j++) {
+            double d = get_dist(d_set->data[i], d_set->data[j]);
+            if (d < r.dist )
+            {
+                r.a = d_set->data[i];
+                r.b = d_set->data[j];
+                r.dist = d;
+            }
+        }
+    }
+    
+    return r;
 }
 
 

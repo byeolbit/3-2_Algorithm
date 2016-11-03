@@ -12,22 +12,6 @@
 #include "Essential.h"
 
 
-struct point
-{
-    double x,y;
-};
-
-typedef struct point point;
-
-struct point_set
-{
-    int size;
-    point *data;
-};
-
-typedef struct point_set point_s;
-
-
 int partition(point *data_set, int f, int l);
 int randomized_partition(point *data_set, int f, int l);
 void quick_sort(point *data_set, int f, int k);
@@ -56,11 +40,20 @@ int partition(point *data_set, int f, int l)
     return i;
 }
 
-int randomized_partition(point *data_set, int f, int l)
+int partition_y(point *data_set, int f, int l)
 {
-    int i = get_random(f, l);
-    swap_arr(data_set, l, i);
-    return partition(data_set, f, l);
+    double y = data_set[l].y;
+    int i = f-1;
+    
+    for(int j=f; j<l; j++)
+    {
+        if(data_set[j].y<=y)
+        {
+            swap_arr(data_set, ++i, j);
+        }
+    }
+    swap_arr(data_set, ++i, l);
+    return i;
 }
 
 void quick_sort(point *data_set, int f, int k)
@@ -73,13 +66,13 @@ void quick_sort(point *data_set, int f, int k)
     }
 }
 
-void quick_sort_randomized(point *data_set, int f, int k)
+void quick_sort_y(point *data_set, int f, int k)
 {
     if (f<k)
     {
-        int q = randomized_partition(data_set, f, k);
-        quick_sort_randomized(data_set, f, q-1);
-        quick_sort_randomized(data_set, q+1, k);
+        int q = partition_y(data_set, f, k);
+        quick_sort_y(data_set, f, q-1);
+        quick_sort_y(data_set, q+1, k);
     }
 }
 

@@ -9,7 +9,12 @@
 #include "ClosestPair.h"
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    printf("Hello, World!\n");
+    
+    FILE *fp = open_file("data07_closest.txt","r+");
+    
+    point_s *result = build_data(fp);
+    quick_sort(result->data, 0, result->size-1);
+    printf("closest dist : %lf\n",closest_pair(result).dist);
+    
     return 0;
 }

@@ -20,6 +20,21 @@
 #include <time.h>
 #include <unistd.h>
 
+struct point
+{
+    double x,y;
+};
+
+typedef struct point point;
+
+struct point_set
+{
+    int size;
+    point *data;
+};
+
+typedef struct point_set point_s;
+
 clock_t start_time;
 clock_t end_time;
 
