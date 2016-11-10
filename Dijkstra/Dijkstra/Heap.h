@@ -18,8 +18,8 @@
 #define RIGHT_CHILD(i)  (i * 2) + 2         //get node right-child
 
 struct node {
-    int d;
-    int i;
+    unsigned int d;
+    unsigned int i;
     int p;
 };
 
@@ -47,10 +47,10 @@ void max_heapify(struct priority_queue *p_queue, int i){
     int R = RIGHT_CHILD(i);
     int largest;
     
-    if(L <= p_queue->size-1 && p_queue->heap[L].d < p_queue->heap[i].d) largest = L;
+    if(L <= p_queue->size-1 && p_queue->heap[L].d <= p_queue->heap[i].d) largest = L;
     else largest = i;
     
-    if(R <= p_queue->size-1 && p_queue->heap[R].d < p_queue->heap[largest].d) largest = R;
+    if(R <= p_queue->size-1 && p_queue->heap[R].d <= p_queue->heap[largest].d) largest = R;
     
     if(largest != i){
         struct node temp = p_queue->heap[i];
@@ -102,6 +102,56 @@ struct node extract_max(struct priority_queue *p_queue){
     return max;
     
 }
+
+struct node change_key(struct priority_queue *p_queue, int x, int k, int p){
+    
+    int i = 0;
+    int chk = 0;
+    
+    /* bfs */
+    for(i = 0; i<p_queue->size; i++){
+        if(p_queue->heap[i].i == x){
+            p_queue->heap[i].d = k;
+            p_queue->heap[i].p = p;
+            chk = 1;
+            break;
+        }
+    }
+    
+    if(chk == 0){
+        struct node d_node;
+        d_node.d = -1;
+        d_node.i = 0;
+        d_node.p = 0;
+        return d_node;
+    }
+    
+    
+    build_max_heap(p_queue);
+    
+    return p_queue->heap[i];
+    
+}
+
+struct node change_p(struct priority_queue *p_queue, int x, int p){
+    
+    int i = 0;
+    int chk = 0;
+    
+    /* bfs */
+    for(i = 0; i<p_queue->size; i++){
+        if(p_queue->heap[i].i == x){
+            p_queue->heap[i].p = p;
+            chk = 1;
+            break;
+        }
+    }
+    
+    return p_queue->heap[i];
+}
+
+
+
 
 struct node increase_key(struct priority_queue *p_queue, int x, int k){
     
@@ -193,7 +243,7 @@ struct node h_delete(struct priority_queue *p_queue, int x){
 
 void print_queue(struct priority_queue *queue){
     
-    for(int i=0; i<queue->size; i++) printf("%d, %d, %d\n",queue->heap[i].i,queue->heap[i].d,queue->heap[i].p);
+    for(int i=0; i<queue->size; i++) printf("%u, %u, %d\n",queue->heap[i].i,queue->heap[i].d,queue->heap[i].p);
     
 }
 

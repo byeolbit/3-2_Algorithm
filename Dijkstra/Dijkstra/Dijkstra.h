@@ -14,11 +14,11 @@
 #include <memory.h>
 #include "Heap.h"
 
-#define MAXINT 4294967295
+#define INF 4294967295
 
 unsigned int **path_list;
 unsigned int *min_set;
-unsigned int *prev_set;
+int *prev_set;
 int *chk_set;
 
 int path_size;
@@ -29,9 +29,9 @@ void make_heap(){
     
     queue = calloc(1,sizeof(struct priority_queue));
     
-    queue->size = path_size;
+    queue->size = 0;
     
-    queue->heap = calloc(path_size,sizeof(struct node));
+    queue->heap = calloc(0,sizeof(struct node));
     
 }
 
@@ -75,7 +75,7 @@ void dijkstra(int dst)
 {
     for (int i = 0; i < path_size; i++)
     {
-        min_set[i] = MAXINT;
+        min_set[i] = INF;
         chk_set[i] = 0;     //0 -> false, 1 -> true
     }
     
@@ -88,14 +88,14 @@ void dijkstra(int dst)
         
         for (int j = 0; j < path_size; j++)
         {
-            if(min_set[u] + path_list[u][j] < min_set[j] && !chk_set[j] && path_list[u][j] && min_set[u] != MAXINT)
+            if(min_set[u] + path_list[u][j] < min_set[j] && !chk_set[j] && path_list[u][j] && min_set[u] != INF)
                 min_set[j] = min_set[u] + path_list[u][j];
         }
     }
     
 }
 
-struct node new_node(int i, int d, int p)
+struct node new_node(unsigned int i, unsigned int d, int p)
 {
     struct node n;// = calloc(1, sizeof(struct node));
     n.d = d, n.i = i, n.p = p;
@@ -105,35 +105,36 @@ struct node new_node(int i, int d, int p)
 
 void dijkstra_queue(int dst)
 {
-    for (int i = 0; i < path_size; i++)
-    {
-        min_set[i] = MAXINT;
-        prev_set[i] = 0;
-        
-        insert(queue, new_node(i, min_set[i], prev_set[i]));
-    }
-    
     min_set[dst] = 0;
     
-    while(!queue->size)
+    for (int i = 0; i < path_size; i++)
     {
-        print_queue(queue);
-        struct node u = extract_max(queue);
+        if( i != dst )
+            min_set[i] = INF;
         
-        for (int v = 0; v < path_size; v++)
+        insert(queue, new_node(i, min_set[i], -1)); //-1 is undefined
+    }
+    
+    while(queue->size)
+    {
+        int u = extract_max(queue).i;
+        
+        for (int v = 0; v < queue->size; v++)
         {
-            if (min_set[v] != MAXINT && !chk_set[v])
+            int v_i = queue->heap[v].i;
+            if (path_list[u][v_i] != 0)
             {
-                int a = min_set[u.i] + path_list[u.i][v];
+                int a = min_set[u] + path_list[u][v_i];
                 
-                if( a < min_set[v] )
+                if( a < min_set[v_i] )
                 {
-                    min_set[v] = a;
-                    prev_set[v] = u.i;
-                    decrease_key(queue, u.i, a);
+                    min_set[v_i] = a;
+                    change_key(queue, v_i, a, u);
                 }
             }
         }
+        //print_queue(queue);
+        //printf("\n========\n");
     }
 }
 
@@ -164,7 +165,7 @@ void print_queue_set(){
     make_heap();
     dijkstra_queue(dst);
     for (int i = 0; i < path_size ; i++)
-        if( i != dst )printf("%d -> %d, cost=%d\n",dst,i,min_set[i]);
+        if( i != dst )printf("%d -> %d, cost=%u\n",dst,i,min_set[i]);
     
     for (int i = 0; i < path_size ; i++)
         free(path_list[i]);
