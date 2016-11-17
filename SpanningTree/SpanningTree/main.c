@@ -6,13 +6,14 @@
 //  Copyright © 2016년 Sang Gyeong Jo. All rights reserved.
 //
 
-#include <stdio.h>
 #include "PrimMST.h"
 
 int main(int argc, const char * argv[]) {
     
+    int start_point = 0;
+    
     build_path_static();
-    prim(0);
+    prim(start_point);
     
     return 0;
 }
