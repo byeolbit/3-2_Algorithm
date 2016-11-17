@@ -9,7 +9,7 @@
 #ifndef PrimMST_h
 #define PrimMST_h
 
-#include "MinPriorityQueue.h"
+#include "MinPriorityQueue_s.h"
 
 #define INF 4294967295
 #define BF 0
